@@ -46,4 +46,6 @@ public class Validator {
         if (cedula == null) return false;
         return Pattern.matches("^\\d{10}$", cedula);
     }
+    
+    
 }

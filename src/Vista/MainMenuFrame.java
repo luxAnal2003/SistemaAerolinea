@@ -4,6 +4,7 @@ import controlador.LoginController;
 
 import javax.swing.*;
 import java.awt.*;
+import Vista.FrmDashboard;
 
 public class MainMenuFrame extends JFrame {
     
@@ -46,12 +47,26 @@ public class MainMenuFrame extends JFrame {
         gbc.gridy = 0;
         buttonPanel.add(btnPerfil, gbc);
         
-        // Botones para otros módulos (vacíos para tus compañeros)
-        JButton btnVuelos = crearBoton("Gestión de Vuelos", "vuelos.png", new Color(156, 39, 176));
-        btnVuelos.addActionListener(e -> JOptionPane.showMessageDialog(this, 
-            "Módulo de Vuelos - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
+        JButton btnAeronave = crearBoton(
+                "Aeronaves",
+                "avion.png",
+                new Color(0, 150, 136)
+        );
+
+        btnAeronave.addActionListener(
+                e -> abrirAeronaves()
+        );
+
         gbc.gridx = 1;
-        buttonPanel.add(btnVuelos, gbc);
+
+        buttonPanel.add(btnAeronave, gbc);
+        
+        // Botones para otros módulos (vacíos para tus compañeros)
+//        JButton btnVuelos = crearBoton("Gestión de Vuelos", "vuelos.png", new Color(156, 39, 176));
+//        btnVuelos.addActionListener(e -> JOptionPane.showMessageDialog(this, 
+//            "Módulo de Vuelos - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
+//        gbc.gridx = 1;
+//        buttonPanel.add(btnVuelos, gbc);
         
         JButton btnReservas = crearBoton("Mis Reservas", "reservas.png", new Color(255, 152, 0));
         btnReservas.addActionListener(e -> JOptionPane.showMessageDialog(this, 
@@ -97,6 +112,11 @@ public class MainMenuFrame extends JFrame {
     
     private void abrirPerfil() {
         new ProfileFrame().setVisible(true);
+        this.dispose();
+    }
+    
+    private void abrirAeronaves() {
+        new FrmDashboard().setVisible(true);
         this.dispose();
     }
     

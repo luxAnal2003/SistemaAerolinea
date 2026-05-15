@@ -5,8 +5,6 @@ import utils.DatabaseConnection;
 import utils.Validator;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClienteController {
     

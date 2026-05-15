@@ -3,19 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Vista/ProfileFrame.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Vista/ReservasHistorialFrame.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Vista/LoginFrame.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Vista/RegisterFrame.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Controlador/ClienteController.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Utils/Validator.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Utils/DatabaseConnection.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Vista/MainMenuFrame.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Vista/EditProfileFrame.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Vista/DeleteAccountFrame.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Modelo/Cliente.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/Controlador/LoginController.java</file>
-            <file>file:/C:/Users/LENOVO%20LOQ/Desktop/Software/Verificacion%20y%20Validacion%20de%20Software/EjerciciosNetbeans/SistemaAerolinea/src/SistemaAerolinea.java</file>
+            <file>file:/C:/Users/admin/Documents/10%20SEMESTRE/proyecto/SistemaAerolinea/src/Controlador/TripulacionController.java</file>
+            <file>file:/C:/Users/admin/Documents/10%20SEMESTRE/proyecto/SistemaAerolinea/src/Controlador/AeronaveController.java</file>
+            <file>file:/C:/Users/admin/Documents/10%20SEMESTRE/proyecto/SistemaAerolinea/src/Vista/JPanelRegistrarTripulación.java</file>
         </group>
     </open-files>
 </project-private>
