@@ -4,7 +4,6 @@
  */
 package Vista;
 
-import Controlador.AeronaveController;
 import Controlador.TripulacionController;
 import Modelo.Tripulacion;
 import controlador.LoginController;
@@ -12,12 +11,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.List;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import modelo.Cliente;
@@ -28,447 +29,132 @@ import modelo.Cliente;
  */
 public class JPanelRegistrarTripulación extends javax.swing.JPanel {
 
-    private AeronaveController aeroController;
     private TripulacionController tripuController;
+
     /**
      * Creates new form JPanelAeronave
      */
     public JPanelRegistrarTripulación() {
         initComponents();
-        aeroController = new AeronaveController();
         tripuController = new TripulacionController();
         Cliente cliente = LoginController.getClienteActual();
-        txtusuario.setText(
-                " " + cliente.getNombres()
-        );
-        
+        txtusuario.setText(" " + cliente.getNombres());
+
         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent e) {
                 String texto = txtBuscador.getText().trim();
                 if (texto.isEmpty()) {
-                    cargarAeronavesEnTabla();
+                    cargarTarjetasTripulacion();
                 }
             }
         });
-        
-        this.cargarAeronavesEnTabla();
-        // Layout de tarjetas
-        JpanelCards.setLayout(
-                new GridLayout(0, 1, 10, 10)
-        );
+
+        this.cargarTarjetasTripulacion();
+        JpanelCards.setLayout(new BoxLayout(JpanelCards, BoxLayout.Y_AXIS));
 
         cargarTarjetasTripulacion();
-        
+
     }
-    
-//    private void cargarTarjetasTripulacion() {
-//
-//        JpanelCards.removeAll();
-//
-//        List<Tripulacion> lista
-//                = tripuController
-//                        .listarTripulacion();
-//
-//        for (Tripulacion t : lista) {
-//
-//            JPanel tarjeta= crearTarjeta(t);
-//
-//            JpanelCards.add(tarjeta);
-//        }
-//
-//        JpanelCards.revalidate();
-//
-//        JpanelCards.repaint();
-//    }
-//    
-//    private JPanel crearTarjeta(Tripulacion t) {
-//
-//        JPanel card = new JPanel();
-//
-//        card.setPreferredSize(
-//                new Dimension(320, 110)
-//        );
-//
-//        card.setBackground(Color.WHITE);
-//
-//        card.setBorder(
-//                BorderFactory.createLineBorder(
-//                        new Color(220, 220, 220)
-//                )
-//        );
-//
-//        card.setLayout(null);
-//
-//        // ===== FOTO =====
-//        JLabel foto = new JLabel();
-//
-//        foto.setBounds(15, 20, 60, 60);
-//
-//        ImageIcon icon
-//                = new ImageIcon(
-//                        getClass().getResource(
-//                                "/img/profile.png"
-//                        )
-//                );
-//
-//        Image img
-//                = icon.getImage().getScaledInstance(
-//                        55,
-//                        55,
-//                        Image.SCALE_SMOOTH
-//                );
-//
-//        foto.setIcon(
-//                new ImageIcon(img)
-//        );
-//
-//        // ===== NOMBRE =====
-//        JLabel lblNombre
-//                = new JLabel(
-//                        t.getNombre()
-//                );
-//
-//        lblNombre.setBounds(
-//                90,
-//                10,
-//                200,
-//                25
-//        );
-//
-//        lblNombre.setFont(
-//                new Font(
-//                        "Segoe UI",
-//                        Font.BOLD,
-//                        20
-//                )
-//        );
-//
-//        // ===== ID =====
-//        JLabel lblId
-//                = new JLabel(
-//                        "ID Personal: CA-00"
-//                        + t.getIdTripulante()
-//                );
-//
-//        lblId.setBounds(
-//                90,
-//                35,
-//                200,
-//                20
-//        );
-//
-//        lblId.setFont(
-//                new Font(
-//                        "Segoe UI",
-//                        Font.BOLD,
-//                        16
-//                )
-//        );
-//
-//        // ===== ROL =====
-//        JLabel txtRol
-//                = new JLabel("Rol:");
-//
-//        txtRol.setBounds(
-//                90,
-//                60,
-//                40,
-//                20
-//        );
-//
-//        txtRol.setFont(
-//                new Font(
-//                        "Segoe UI",
-//                        Font.BOLD,
-//                        16
-//                )
-//        );
-//
-//        JLabel lblRol
-//                = new JLabel(
-//                        t.getRol()
-//                );
-//
-//        lblRol.setBounds(
-//                130,
-//                58,
-//                100,
-//                25
-//        );
-//
-//        lblRol.setOpaque(true);
-//
-//        lblRol.setHorizontalAlignment(
-//                SwingConstants.CENTER
-//        );
-//
-//        lblRol.setFont(
-//                new Font(
-//                        "Segoe UI",
-//                        Font.PLAIN,
-//                        14
-//                )
-//        );
-//
-//        // COLOR SEGÚN ROL
-//        if (t.getRol().equals("Piloto")) {
-//
-//            lblRol.setBackground(
-//                    new Color(198, 239, 206)
-//            );
-//
-//            lblRol.setForeground(
-//                    new Color(0, 97, 0)
-//            );
-//
-//        } else {
-//
-//            lblRol.setBackground(
-//                    new Color(221, 235, 247)
-//            );
-//
-//            lblRol.setForeground(
-//                    new Color(0, 76, 153)
-//            );
-//        }
-//
-//        // ===== LICENCIA =====
-//        JLabel lblLicencia
-//                = new JLabel(
-//                        "Licencia: "
-//                        + t.getLicencia()
-//                );
-//
-//        lblLicencia.setBounds(
-//                90,
-//                85,
-//                220,
-//                20
-//        );
-//
-//        lblLicencia.setFont(
-//                new Font(
-//                        "Segoe UI",
-//                        Font.BOLD,
-//                        16
-//                )
-//        );
-//
-//        // ===== AGREGAR =====
-//        card.add(foto);
-//
-//        card.add(lblNombre);
-//
-//        card.add(lblId);
-//
-//        card.add(txtRol);
-//
-//        card.add(lblRol);
-//
-//        card.add(lblLicencia);
-//
-//        return card;
-//    }
-    
+
     private void cargarTarjetasTripulacion() {
 
-    // Layout para múltiples tarjetas
-    JpanelCards.setLayout(
-            new FlowLayout(
-                    FlowLayout.LEFT,
-                    15,
-                    15
-            )
-    );
+        JpanelCards.removeAll();
 
-    JpanelCards.removeAll();
+        JpanelCards.setLayout( new BoxLayout(JpanelCards,BoxLayout.Y_AXIS));
 
-    List<Tripulacion> lista
-            = tripuController
-                    .listarTripulacion();
+        List<Tripulacion> lista = tripuController.listarTripulacion();
 
-    for (Tripulacion t : lista) {
+        for (Tripulacion t : lista) {
+            JPanel tarjeta = crearTarjeta(t);
+            
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+            wrapper.setOpaque(false);
+            wrapper.setPreferredSize( new Dimension(348, 110));
+            wrapper.setMaximumSize( new Dimension(348, 110));
+            wrapper.setMinimumSize(new Dimension(348, 110) );
+            wrapper.add(tarjeta);
 
-        JPanel tarjeta
-                = crearTarjeta(t);
+            JpanelCards.add(wrapper);
+        }
 
-        JpanelCards.add(tarjeta);
+        JpanelCards.add(Box.createVerticalGlue());
+        JpanelCards.revalidate();
+        JpanelCards.repaint();
     }
 
-    JpanelCards.revalidate();
+    private JPanel crearTarjeta(Tripulacion t) {
+        JPanel card = new JPanel();
+        
+        card.setPreferredSize( new Dimension(338, 110));
+        card.setMaximumSize(new Dimension(338, 110));
+        card.setMinimumSize(new Dimension(338, 110));
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
+        card.setLayout(null);
 
-    JpanelCards.repaint();
-}
+        JLabel foto = new JLabel();
+        foto.setBounds(10, 20, 50, 50);
+        ImageIcon icon = new ImageIcon(getClass().getResource("/img/profile.png"));
+        Image img = icon.getImage().getScaledInstance(45,45,Image.SCALE_SMOOTH);
+        foto.setIcon(new ImageIcon(img));
 
-private JPanel crearTarjeta(Tripulacion t) {
+        JLabel lblNombre = new JLabel(t.getNombre() + " " + t.getApellido() );
+        lblNombre.setBounds(65,8,170,20);
+        lblNombre.setFont(new Font("Segoe UI",Font.BOLD,14));
 
-    JPanel card = new JPanel();
+        JLabel txtId = new JLabel("ID Personal:");
+        txtId.setBounds(65,35,70,18);
+        txtId.setFont(new Font("Segoe UI",Font.BOLD,11));
 
-    // ===== TAMAÑO PEQUEÑO =====
-    card.setPreferredSize(
-            new Dimension(250, 85)
-    );
+        JLabel lblId = new JLabel("CA-00" + t.getIdTripulante());
+        lblId.setBounds(138,35,70,18);
+        lblId.setFont(new Font("Segoe UI",Font.PLAIN,11));
+        
+        JLabel txtRol = new JLabel("Rol:");
+        txtRol.setBounds(65,55,35,18);
+        txtRol.setFont(new Font("Segoe UI",Font.BOLD,11 ));
 
-    card.setBackground(Color.WHITE);
+        JLabel lblRol = new JLabel(t.getRol());
+        lblRol.setBounds(105,55,85,18);
+        lblRol.setOpaque(true);
+        lblRol.setHorizontalAlignment(SwingConstants.CENTER );
+        lblRol.setFont(new Font("Segoe UI",Font.PLAIN,10));
 
-    card.setBorder(
-            BorderFactory.createLineBorder(
-                    new Color(220, 220, 220)
-            )
-    );
+        if (t.getRol().equalsIgnoreCase("Piloto")) {
+            lblRol.setBackground(new Color(198, 239, 206));
+            lblRol.setForeground(new Color(0, 97, 0));
+        } else if (t.getRol().equalsIgnoreCase("Copiloto")) {
+            lblRol.setBackground(new Color(221, 235, 247) );
+            lblRol.setForeground(new Color(0, 76, 153) );
+        } else {
+            lblRol.setBackground(new Color(242, 242, 242));
+            lblRol.setForeground(Color.DARK_GRAY);
+        }
 
-    card.setLayout(null);
+        JLabel txtLicencia = new JLabel("Licencia:");
+        txtLicencia.setBounds(65,75,60,18);
+        txtLicencia.setFont(new Font("Segoe UI",Font.BOLD,11));
 
-    // ===== FOTO =====
-    JLabel foto = new JLabel();
+        JLabel lblLicencia = new JLabel(t.getLicencia());
+        lblLicencia.setBounds(128,75,100,18);
+        lblLicencia.setFont(new Font("Segoe UI",Font.PLAIN,11));
+        
+        card.add(foto);
+        card.add(lblNombre);
+        
+        card.add(txtId);
+        card.add(lblId);
 
-    foto.setBounds(10, 15, 40, 40);
+        card.add(txtRol);
+        card.add(lblRol);
 
-    ImageIcon icon
-            = new ImageIcon(
-                    getClass().getResource(
-                            "/img/profile.png"
-                    )
-            );
+        card.add(txtLicencia);
+        card.add(lblLicencia);
 
-    Image img
-            = icon.getImage().getScaledInstance(
-                    38,
-                    38,
-                    Image.SCALE_SMOOTH
-            );
-
-    foto.setIcon(
-            new ImageIcon(img)
-    );
-
-    // ===== NOMBRE =====
-    JLabel lblNombre
-            = new JLabel(
-                    t.getNombre()
-            );
-
-    lblNombre.setBounds(
-            60,
-            5,
-            170,
-            18
-    );
-
-    lblNombre.setFont(
-            new Font(
-                    "Segoe UI",
-                    Font.BOLD,
-                    13
-            )
-    );
-
-    // ===== ID =====
-    JLabel lblId
-            = new JLabel(
-                    "ID: CA-00"
-                    + t.getIdTripulante()
-            );
-
-    lblId.setBounds(
-            60,
-            22,
-            120,
-            15
-    );
-
-    lblId.setFont(
-            new Font(
-                    "Segoe UI",
-                    Font.PLAIN,
-                    11
-            )
-    );
-
-    // ===== ROL =====
-    JLabel lblRol
-            = new JLabel(
-                    t.getRol()
-            );
-
-    lblRol.setBounds(
-            60,
-            45,
-            70,
-            18
-    );
-
-    lblRol.setOpaque(true);
-
-    lblRol.setHorizontalAlignment(
-            SwingConstants.CENTER
-    );
-
-    lblRol.setFont(
-            new Font(
-                    "Segoe UI",
-                    Font.PLAIN,
-                    10
-            )
-    );
-
-    // ===== COLOR SEGÚN ROL =====
-    if (t.getRol().equals("Piloto")) {
-
-        lblRol.setBackground(
-                new Color(198, 239, 206)
-        );
-
-        lblRol.setForeground(
-                new Color(0, 97, 0)
-        );
-
-    } else {
-
-        lblRol.setBackground(
-                new Color(221, 235, 247)
-        );
-
-        lblRol.setForeground(
-                new Color(0, 76, 153)
-        );
+        return card;
     }
 
-    // ===== LICENCIA =====
-    JLabel lblLicencia
-            = new JLabel(
-                    t.getLicencia()
-            );
-
-    lblLicencia.setBounds(
-            140,
-            45,
-            90,
-            18
-    );
-
-    lblLicencia.setFont(
-            new Font(
-                    "Segoe UI",
-                    Font.PLAIN,
-                    10
-            )
-    );
-
-    // ===== AGREGAR COMPONENTES =====
-    card.add(foto);
-
-    card.add(lblNombre);
-
-    card.add(lblId);
-
-    card.add(lblRol);
-
-    card.add(lblLicencia);
-
-    return card;
-}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -663,111 +349,95 @@ private JPanel crearTarjeta(Tripulacion t) {
 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         this.setear();
-        this.cargarAeronavesEnTabla();
+        this.cargarTarjetasTripulacion();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void setear() {
-//        txtLicencia.setText("");
-//        SpinCapacidad.setValue(0);
-//        cbxEstado.setSelectedIndex(0);
+        txtNombres.setText("");
+        txtApellidos.setText("");
+        txtCedula.setText("");
+        txtLicencia.setText("");
+        cbxRol.setSelectedIndex(0);
     }
-    
+
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-//        String modelo = txtLicencia.getText().trim();
-//        int capacidad = (int) SpinCapacidad.getValue();
-//        String estado= cbxEstado.getSelectedItem().toString();
-//        Aeronave aeronave = new Aeronave();
-//        aeronave.setModelo(modelo);
-//        aeronave.setCapacidad(capacidad);
-//        aeronave.setEstado(estado);
-//        boolean registrado = aeroController.crearAeronave(aeronave);
-//
-//        if (registrado) {
-//            JOptionPane.showMessageDialog(
-//                    this,
-//                    "Aeronave registrada correctamente"
-//            );
-//            setear();
-//            cargarAeronavesEnTabla();
-//        } else {
-//            JOptionPane.showMessageDialog(
-//                    this,
-//                    "Error al registrar aeronave"
-//            );
-//        }
+        String nombres = txtNombres.getText().trim();
+        String apellidos = txtApellidos.getText().trim();
+        String cedula = txtCedula.getText().trim();
+        String licencia = txtLicencia.getText().trim();
+        String rol = cbxRol.getSelectedItem().toString();
+        Tripulacion trip = new Tripulacion();
+        trip.setNombre(nombres);
+        trip.setApellido(apellidos);
+        trip.setCedula(cedula);
+        trip.setLicencia(licencia);
+        trip.setRol(rol);
+        boolean registrado = tripuController.crearTripu(trip);
+
+        if (registrado) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Tripulación registrada correctamente"
+            );
+            setear();
+            cargarTarjetasTripulacion();
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al registrar tripulación"
+            );
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        this.buscarAeronave();
+        this.buscarTripulacion();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
-         if (evt.getKeyCode() == evt.VK_ENTER) {
-            this.buscarAeronave();
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarTripulacion();
         }
     }//GEN-LAST:event_txtBuscadorKeyPressed
 
     private void cbxRolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxRolActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxRolActionPerformed
-    
-    private void buscarAeronave() {
-//        String criterio = txtBuscador.getText().trim();
-//        AeronaveController controller = new AeronaveController();
-//
-//        if (criterio.isEmpty()) {
-//            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
-//            cargarAeronavesEnTabla();
-//            return;
-//        }
-//
-//        DefaultTableModel model = new DefaultTableModel();
-//        model.setColumnIdentifiers(new Object[]{"ID", "Modelo", "Capacidad", "Estado"});
-//
-//        List<Aeronave> aeronavesEncontradas = controller.buscarAeronave(criterio);
-//
-//        if (!aeronavesEncontradas.isEmpty()) {
-//            for (Aeronave aero : aeronavesEncontradas) {
-//                Object[] fila = new Object[8];
-//                fila[0] = aero.getIdAeronave();
-//                fila[1] = aero.getModelo();
-//                fila[2] = aero.getCapacidad();
-//                model.addRow(fila);
-//            }
-//            tableAeronave.setModel(model);
-//            jScrollPane1.setViewportView(tableAeronave);
-//        } else {
-//            JOptionPane.showMessageDialog(null, "No se encontraron resultados");
-//            cargarAeronavesEnTabla();
-//        }
-    }
 
-    private void cargarAeronavesEnTabla() {
-//        DefaultTableModel model = new DefaultTableModel();
-//        model.setColumnIdentifiers(
-//                new Object[]{
-//                    "ID",
-//                    "Modelo",
-//                    "Capacidad",
-//                    "Estado"
-//                }
-//        );
-//
-//        List<Aeronave> aeronaves
-//                = aeroController.listarAeronaves();
-//
-//        for (Aeronave a : aeronaves) {
-//
-//            model.addRow(new Object[]{
-//                a.getIdAeronave(),
-//                a.getModelo(),
-//                a.getCapacidad(),
-//                a.getEstado()
-//            });
-//        }
-//
-//        tableAeronave.setModel(model);
+    private void buscarTripulacion() {
+        String criterio = txtBuscador.getText().trim();
+        
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null,"Ingrese un criterio de búsqueda" );
+            cargarTarjetasTripulacion();
+
+            return;
+        }
+
+        List<Tripulacion> tripEncontrados = tripuController.buscarTripulacion(criterio);
+        JpanelCards.removeAll();
+        
+        if (!tripEncontrados.isEmpty()) {
+            for (Tripulacion t : tripEncontrados) {
+                JPanel tarjeta = crearTarjeta(t);
+
+                JPanel wrapper = new JPanel(new FlowLayout(  FlowLayout.LEFT,5,5));
+                wrapper.setOpaque(false);
+                wrapper.setPreferredSize(new Dimension(348, 110));
+                wrapper.setMaximumSize(new Dimension(348, 110));
+                wrapper.setMinimumSize(new Dimension(348, 110));
+                wrapper.add(tarjeta);
+
+                JpanelCards.add(wrapper);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null,"No se encontraron resultados" );
+            cargarTarjetasTripulacion();
+        }
+
+        JpanelCards.revalidate();
+        JpanelCards.repaint();
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel JpanelCards;
     private javax.swing.JButton btnBuscar;

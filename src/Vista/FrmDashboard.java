@@ -78,6 +78,11 @@ public class FrmDashboard extends javax.swing.JFrame {
         btnOperaciones.setText("Operaciones");
         btnOperaciones.setBorder(null);
         btnOperaciones.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnOperaciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOperacionesActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnOperaciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 120, -1));
 
         btnDashboard.setBackground(new java.awt.Color(0, 51, 102));
@@ -223,6 +228,11 @@ public class FrmDashboard extends javax.swing.JFrame {
         JPanelRegistrarTripulación trip = new JPanelRegistrarTripulación();
         ShowPanel(trip);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void btnOperacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOperacionesActionPerformed
+        JPanelAsignarTripulante asignar = new JPanelAsignarTripulante();
+        ShowPanel(asignar);
+    }//GEN-LAST:event_btnOperacionesActionPerformed
 
     private void ShowPanel(JPanel p){
         p.setSize(740, 490);

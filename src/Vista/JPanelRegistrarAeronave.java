@@ -279,7 +279,6 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
     
     private void buscarAeronave() {
         String criterio = txtBuscador.getText().trim();
-        AeronaveController controller = new AeronaveController();
 
         if (criterio.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
@@ -290,7 +289,7 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(new Object[]{"ID", "Modelo", "Capacidad", "Estado"});
 
-        List<Aeronave> aeronavesEncontradas = controller.buscarAeronave(criterio);
+        List<Aeronave> aeronavesEncontradas = aeroController.buscarAeronave(criterio);
 
         if (!aeronavesEncontradas.isEmpty()) {
             for (Aeronave aero : aeronavesEncontradas) {
