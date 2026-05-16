@@ -5,6 +5,7 @@ import controlador.LoginController;
 import javax.swing.*;
 import java.awt.*;
 import Vista.FrmDashboard;
+import Vista.FrmPagePrincipal;
 
 public class MainMenuFrame extends JFrame {
     
@@ -65,8 +66,9 @@ public class MainMenuFrame extends JFrame {
         buttonPanel.add(btnVuelos, gbc);
         
         JButton btnReservas = crearBoton("Mis Reservas", new Color(255, 152, 0));
-        btnReservas.addActionListener(e -> JOptionPane.showMessageDialog(this, 
-            "Módulo de Reservas - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
+        btnReservas.addActionListener(
+                e -> abrirReservas()
+        );
         gbc.gridx = 0;
         gbc.gridy = 1;
         buttonPanel.add(btnReservas, gbc);
@@ -116,7 +118,10 @@ public class MainMenuFrame extends JFrame {
         new FrmDashboard().setVisible(true);
         this.dispose();
     }
-    
+    private void abrirReservas() {
+        new FrmPagePrincipal().setVisible(true);
+        this.dispose();
+    }
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(this, 
             "¿Está seguro que desea cerrar sesión?", 

@@ -30,6 +30,7 @@ public class GestionVuelosFrame extends JFrame {
     private JTextField txtHoraS;
     private JTextField txtHoraL;
     private JTextField txtCupos;
+    private JTextField txtPrecioBase;
 
     private JTextField txtBuscar;
 
@@ -97,6 +98,7 @@ public class GestionVuelosFrame extends JFrame {
         txtHoraS = new JTextField();
         txtHoraL = new JTextField();
         txtCupos = new JTextField();
+        txtPrecioBase = new JTextField();
 
         cbEstado = new JComboBox<>(new String[]{
             "Programado",
@@ -115,12 +117,12 @@ public class GestionVuelosFrame extends JFrame {
         agregarCampo(panelForm, "Hora Salida:", txtHoraS, gbc, 5);
         agregarCampo(panelForm, "Hora Llegada:", txtHoraL, gbc, 6);
         agregarCampo(panelForm, "Cupos:", txtCupos, gbc, 7);
-
+        agregarCampo(panelForm, "Precio Base:", txtPrecioBase, gbc, 8);
         // =========================================
         // AERONAVE
         // =========================================
         gbc.gridx = 0;
-        gbc.gridy = 8;
+        gbc.gridy = 9;
 
         JLabel lblAeronave = new JLabel("Aeronave:");
 
@@ -136,7 +138,7 @@ public class GestionVuelosFrame extends JFrame {
         // ESTADO
         // =========================================
         gbc.gridx = 0;
-        gbc.gridy = 9;
+        gbc.gridy = 10;
 
         JLabel lblEstado = new JLabel("Estado:");
 
@@ -187,7 +189,7 @@ public class GestionVuelosFrame extends JFrame {
         panelBotones.add(btnVolver);
 
         gbc.gridx = 0;
-        gbc.gridy = 10;
+        gbc.gridy = 11;
         gbc.gridwidth = 2;
 
         panelForm.add(panelBotones, gbc);
@@ -241,6 +243,7 @@ public class GestionVuelosFrame extends JFrame {
                     "Hora Llegada",
                     "Cupos",
                     "Estado",
+                    "Precio Base",
                     "ID Aeronave"
                 }, 0
         );
@@ -327,38 +330,10 @@ public class GestionVuelosFrame extends JFrame {
     // CARGAR AERONAVES
     // =========================================
     private void cargarAeronaves() {
-
-        listaAeronaves = new ArrayList<>();
-
+        listaAeronaves = vueloController.listarAeronaves();
         cbAeronave.removeAllItems();
-
-        String sql = "SELECT * FROM aeronaves";
-
-        try (
-                Connection con = DatabaseConnection.getConnection(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-
-                Aeronave a = new Aeronave();
-
-                a.setIdAeronave(rs.getInt("id_aeronave"));
-                a.setModelo(rs.getString("modelo"));
-
-                listaAeronaves.add(a);
-
-                cbAeronave.addItem(
-                        a.getIdAeronave()
-                        + " - "
-                        + a.getModelo()
-                );
-            }
-
-        } catch (SQLException e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error cargando aeronaves"
-            );
+        for (Aeronave a : listaAeronaves) {
+            cbAeronave.addItem(a.getIdAeronave() + " - " + a.getModelo());
         }
     }
 
@@ -384,6 +359,7 @@ public class GestionVuelosFrame extends JFrame {
                     txtHoraL.getText(),
                     Integer.parseInt(txtCupos.getText()),
                     cbEstado.getSelectedItem().toString(),
+                    Double.parseDouble(txtPrecioBase.getText()),
                     idAeronave
             );
 
@@ -432,6 +408,7 @@ public class GestionVuelosFrame extends JFrame {
                     txtHoraL.getText(),
                     Integer.parseInt(txtCupos.getText()),
                     cbEstado.getSelectedItem().toString(),
+                    Double.parseDouble(txtPrecioBase.getText()),
                     idAeronave
             );
 
@@ -498,6 +475,7 @@ public class GestionVuelosFrame extends JFrame {
                 v.getHoraLlegada(),
                 v.getCupos(),
                 v.getEstado(),
+                v.getPrecioBase(),
                 v.getIdAeronave()
             });
         }
@@ -524,6 +502,7 @@ public class GestionVuelosFrame extends JFrame {
                 v.getHoraLlegada(),
                 v.getCupos(),
                 v.getEstado(),
+                v.getPrecioBase(),
                 v.getIdAeronave()
             });
         }
@@ -560,9 +539,12 @@ public class GestionVuelosFrame extends JFrame {
 
         cbEstado.setSelectedItem(
                 modeloTabla.getValueAt(fila, 8).toString());
+        
+        txtPrecioBase.setText(
+                modeloTabla.getValueAt(fila, 9).toString());
 
         int idAeronave = Integer.parseInt(
-                modeloTabla.getValueAt(fila, 9).toString()
+                modeloTabla.getValueAt(fila, 10).toString()
         );
 
         for (int i = 0; i < listaAeronaves.size(); i++) {
@@ -589,7 +571,7 @@ public class GestionVuelosFrame extends JFrame {
         txtHoraS.setText("");
         txtHoraL.setText("");
         txtCupos.setText("");
-
+        txtPrecioBase.setText("");
         cbEstado.setSelectedIndex(0);
 
         cbAeronave.setSelectedIndex(0);

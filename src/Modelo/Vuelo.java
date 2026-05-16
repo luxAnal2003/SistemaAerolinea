@@ -10,11 +10,13 @@ public class Vuelo {
     private String horaLlegada; 
     private int cupos;          
     private String estado;
+    private double precioBase;
     private int idAeronave;
 
-   
+    public Vuelo() {
+    }
     public Vuelo(String codigo, String aerolinea, String origen, String destino, 
-                 String fechaSalida, String horaSalida, String horaLlegada, int cupos, String estado, int idAeronave) {
+                 String fechaSalida, String horaSalida, String horaLlegada, int cupos, String estado, double precioBase, int idAeronave) {
         this.codigo = codigo;
         this.aerolinea = aerolinea;
         this.origen = origen;
@@ -24,9 +26,17 @@ public class Vuelo {
         this.horaLlegada = horaLlegada;
         this.cupos = cupos;
         this.estado = estado;
+        this.precioBase = precioBase;
         this.idAeronave = idAeronave;
     }
 
+    public double getPrecioBase() {
+        return precioBase;
+    }
+
+    public void setPrecioBase(double precioBase) {
+        this.precioBase = precioBase;
+    }
     public String getCodigo() {
         return codigo;
     }
