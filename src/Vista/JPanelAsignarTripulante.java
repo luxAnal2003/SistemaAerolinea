@@ -6,6 +6,7 @@ package Vista;
 
 import Controlador.AeronaveController;
 import Controlador.TripulacionController;
+import Controlador.VueloTripulacionController;
 import Modelo.Aeronave;
 import Modelo.Tripulacion;
 import controlador.LoginController;
@@ -28,11 +29,14 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
     private AeronaveController aeroController;
     private TripulacionController tripController;
     private VueloController vueloController;
+    private VueloTripulacionController asignacionController;
+    private List<Vuelo> listaVuelos;
 
     private List<Aeronave> listaAeronaves;
     private List<Tripulacion> listaPilotos;
     private List<Tripulacion> listaCopilotos;
     private List<Tripulacion> listaAsistentes;
+
     /**
      * Creates new form JPanelAeronave
      */
@@ -41,10 +45,12 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         aeroController = new AeronaveController();
         tripController = new TripulacionController();
         vueloController = new VueloController();
-        
+        asignacionController = new VueloTripulacionController();
+
+        listaAeronaves = aeroController.listarAeronaves();
         Cliente cliente = LoginController.getClienteActual();
-        txtusuario.setText( " " + cliente.getNombres() );
-        
+        txtusuario.setText(" " + cliente.getNombres());
+
         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent e) {
@@ -54,13 +60,12 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
                 }
             }
         });
-        this.cargarAeronaves();
         this.cargarTripulacion();
         cargarVuelosEnTabla();
         listAsistentes.setSelectionMode(
                 ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         );
-        
+
         if (listaAsistentes.isEmpty()) {
 
             JOptionPane.showMessageDialog(
@@ -70,17 +75,79 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
 
             return;
         }
+        tableVuelos.getSelectionModel().addListSelectionListener(e -> {
+
+            int fila = tableVuelos.getSelectedRow();
+
+            if (fila >= 0) {
+
+                seleccionarVuelo(fila);
+            }
+        });
         setear();
     }
 
-    private void cargarAeronaves(){
-        listaAeronaves = aeroController.listarAeronaves();
-        cbxAeronaveActiva.removeAllItems();
-        cbxAeronaveActiva.addItem("Seleccione...");
+    private void seleccionarVuelo(int fila) {
+
+        if (listaAeronaves == null || listaAeronaves.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No existen aeronaves registradas"
+            );
+
+            return;
+        }
+
+        Vuelo vuelo = listaVuelos.get(fila);
+
+        int idAeronave = vuelo.getIdAeronave();
+
+        Aeronave aeronaveSeleccionada = null;
+
         for (Aeronave a : listaAeronaves) {
-            cbxAeronaveActiva.addItem(a.getModelo() + " | " + a.getEstado());
+
+            if (a.getIdAeronave() == idAeronave) {
+
+                aeronaveSeleccionada = a;
+                break;
+            }
+        }
+
+        if (aeronaveSeleccionada != null) {
+
+            txtAeronaveActiva.setText(
+                    aeronaveSeleccionada.getModelo()
+                    + " | "
+                    + aeronaveSeleccionada.getEstado()
+            );
+
+            mostrarInfoAeronave(aeronaveSeleccionada);
         }
     }
+
+    private void mostrarInfoAeronave(Aeronave a) {
+
+        lblModelo.setText(a.getModelo());
+
+        lblRegistro.setText("A-" + a.getIdAeronave());
+
+        lblCapacidad.setText(
+                String.valueOf(a.getCapacidad())
+        );
+
+        lblEstado.setText(a.getEstado());
+
+        if (a.getEstado().equalsIgnoreCase("Mantenimiento")) {
+
+            lblMantenimiento.setText("Sí");
+
+        } else {
+
+            lblMantenimiento.setText("No");
+        }
+    }
+
     private void cargarTripulacion() {
 
         List<Tripulacion> lista
@@ -126,6 +193,7 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
 
         listAsistentes.setModel(modeloLista);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -144,7 +212,6 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
-        cbxAeronaveActiva = new javax.swing.JComboBox<>();
         jLabel16 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -158,6 +225,7 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         lblEstado = new javax.swing.JLabel();
         lblCapacidad = new javax.swing.JLabel();
         lblMantenimiento = new javax.swing.JLabel();
+        txtAeronaveActiva = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         cbxPiloto = new javax.swing.JComboBox<>();
@@ -186,7 +254,7 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
                 txtBuscadorKeyPressed(evt);
             }
         });
-        jPanel3.add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 130, 20));
+        jPanel3.add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 150, 20));
 
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/search.png"))); // NOI18N
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -194,12 +262,12 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
                 btnBuscarActionPerformed(evt);
             }
         });
-        jPanel3.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 40, 40, 20));
+        jPanel3.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 40, 20));
 
         jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
         jLabel10.setText("1. Seleccionar Vuelos");
         jLabel10.setToolTipText("");
-        jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 150, 20));
+        jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 150, 20));
 
         jLabel9.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
         jLabel9.setText("ASIGNACIÓN OPERATIVA DE VUELOS");
@@ -217,18 +285,10 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         jLabel14.setToolTipText("");
         jPanel5.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 150, 20));
 
-        cbxAeronaveActiva.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", " " }));
-        cbxAeronaveActiva.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxAeronaveActivaActionPerformed(evt);
-            }
-        });
-        jPanel5.add(cbxAeronaveActiva, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 180, -1));
-
         jLabel16.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
-        jLabel16.setText("2. Asignar Aeronave");
+        jLabel16.setText("2. Aeronave Relacionada");
         jLabel16.setToolTipText("");
-        jPanel5.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 150, 20));
+        jPanel5.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 170, 20));
 
         jPanel1.setBackground(new java.awt.Color(225, 238, 250));
 
@@ -323,6 +383,11 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         );
 
         jPanel5.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 180, 280));
+
+        txtAeronaveActiva.setEditable(false);
+        txtAeronaveActiva.setBackground(new java.awt.Color(255, 255, 255));
+        txtAeronaveActiva.setEnabled(false);
+        jPanel5.add(txtAeronaveActiva, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 180, -1));
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -422,9 +487,9 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
                 .addComponent(jButton1)
                 .addGap(40, 40, 40))
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -474,14 +539,17 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         txtBuscador.setText("");
         cbxPiloto.setSelectedIndex(0);
         cbxCopiloto.setSelectedIndex(0);
-        cbxAeronaveActiva.setSelectedIndex(0);
+        txtAeronaveActiva.setText("");
+        limpiarLabelsAeronave();
+    }
+
+    private void limpiarLabelsAeronave() {
         lblModelo.setText("");
         lblRegistro.setText("");
         lblCapacidad.setText("");
         lblEstado.setText("");
         lblMantenimiento.setText("");
     }
-    
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         buscarVuelo();
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -492,31 +560,6 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_txtBuscadorKeyPressed
 
-    private void cbxAeronaveActivaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxAeronaveActivaActionPerformed
-        mostrarInfoAeronave();
-    }//GEN-LAST:event_cbxAeronaveActivaActionPerformed
-
-    private void mostrarInfoAeronave() {
-        int index = cbxAeronaveActiva.getSelectedIndex();
-        if (index <= 0) {
-            return;
-        }
-
-        Aeronave a = listaAeronaves.get(index - 1);
-        lblModelo.setText(a.getModelo());
-        lblRegistro.setText( "A-" + a.getIdAeronave());
-        lblCapacidad.setText(String.valueOf(a.getCapacidad()) );
-
-        String estado = a.getEstado();
-        if (estado.equalsIgnoreCase("Mantenimiento")) {
-            lblEstado.setText("Inactivo");
-            lblMantenimiento.setText("Sí");
-        } else {
-            lblEstado.setText("Activo");
-            lblMantenimiento.setText("No");
-        }
-    }
-    
     private void cbxPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPilotoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxPilotoActionPerformed
@@ -526,118 +569,116 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
     }//GEN-LAST:event_cbxCopilotoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (cbxAeronaveActiva.getSelectedIndex() <= 0) {
+        int fila = tableVuelos.getSelectedRow();
+
+        if (fila < 0) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Seleccione una aeronave"
+                    "Seleccione un vuelo"
             );
 
             return;
         }
 
-        if (cbxPiloto.getSelectedIndex() <= 0) {
+        Vuelo vuelo = listaVuelos.get(fila);
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Debe seleccionar un piloto"
+        Aeronave aeronave = null;
+
+        int idAeronave = vuelo.getIdAeronave();
+
+        for (Aeronave a : listaAeronaves) {
+
+            if (a.getIdAeronave() == idAeronave) {
+
+                aeronave = a;
+                break;
+            }
+        }
+
+        Tripulacion piloto = null;
+
+        if (cbxPiloto.getSelectedIndex() > 0) {
+
+            piloto = listaPilotos.get(
+                    cbxPiloto.getSelectedIndex() - 1
             );
-
-            return;
         }
 
-        if (cbxCopiloto.getSelectedIndex() <= 0) {
+        Tripulacion copiloto = null;
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Debe seleccionar un copiloto"
+        if (cbxCopiloto.getSelectedIndex() > 0) {
+
+            copiloto = listaCopilotos.get(
+                    cbxCopiloto.getSelectedIndex() - 1
             );
-
-            return;
-        }
-        String aeronave
-                = cbxAeronaveActiva.getSelectedItem().toString();
-
-        String piloto
-                = cbxPiloto.getSelectedItem().toString();
-
-        String copiloto
-                = cbxCopiloto.getSelectedItem().toString();
-
-        List<String> asistentes
-                = listAsistentes.getSelectedValuesList();
-
-        StringBuilder mensaje
-                = new StringBuilder();
-
-        mensaje.append("=== ASIGNACIÓN DE VUELO ===\n\n");
-
-        mensaje.append("Aeronave: ")
-                .append(aeronave)
-                .append("\n\n");
-
-        mensaje.append("Piloto: ")
-                .append(piloto)
-                .append("\n");
-
-        mensaje.append("Copiloto: ")
-                .append(copiloto)
-                .append("\n\n");
-
-        mensaje.append("Asistentes:\n");
-
-        for (String asistente : asistentes) {
-
-            mensaje.append("- ")
-                    .append(asistente)
-                    .append("\n");
         }
 
-        List<String> asistentesSeleccionados =
-        listAsistentes.getSelectedValuesList();
+        List<Tripulacion> asistentesSeleccionados
+                = new ArrayList<>();
 
-        if (asistentesSeleccionados.size() < 5) {
+        for (int index : listAsistentes.getSelectedIndices()) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Debe seleccionar mínimo 5 asistentes"
+            asistentesSeleccionados.add(
+                    listaAsistentes.get(index)
             );
-
-            return;
         }
 
-        if (asistentesSeleccionados.size() > 5) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Solo puede seleccionar máximo 5 asistentes"
-            );
-
-            return;
-        }
-        
-        listAsistentes.addListSelectionListener(e -> {
-
-            if (listAsistentes.getSelectedIndices().length > 5) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Solo puede seleccionar 5 asistentes"
+        String validacion
+                = asignacionController.validarAsignacion(
+                        aeronave,
+                        piloto,
+                        copiloto,
+                        asistentesSeleccionados
                 );
 
-                listAsistentes.clearSelection();
-            }
-        });
-        JOptionPane.showMessageDialog(
-                this,
-                mensaje.toString()
+        if (validacion != null) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    validacion
+            );
+
+            return;
+        }
+boolean guardado
+        = asignacionController.guardarAsignacion(
+                vuelo,
+                piloto,
+                copiloto,
+                asistentesSeleccionados
         );
+
+if (guardado) {
+
+    String resumen
+            = asignacionController.generarResumen(
+                    vuelo,
+                    aeronave,
+                    piloto,
+                    copiloto,
+                    asistentesSeleccionados
+            );
+
+    JOptionPane.showMessageDialog(
+            this,
+            resumen
+                    + "\n\nAsignación guardada correctamente."
+    );
+
+} else {
+
+    JOptionPane.showMessageDialog(
+            this,
+            "Error al guardar asignación"
+    );
+}
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.setear();
     }//GEN-LAST:event_btnCancelarActionPerformed
-    
+
     private void buscarVuelo() {
 
         String criterio = txtBuscador.getText().trim();
@@ -657,11 +698,10 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
 
         model.setColumnIdentifiers(
                 new Object[]{
-                    "Código",
+                    "ID",
                     "Origen",
                     "Destino",
-                    "Fecha",
-                }
+                    "Horario",}
         );
 
         List<Vuelo> vuelosEncontrados
@@ -674,9 +714,9 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
                 Object[] fila = new Object[8];
 
                 fila[0] = v.getCodigo();
-                fila[2] = v.getOrigen();
-                fila[3] = v.getDestino();
-                fila[4] = v.getFechaSalida();
+                fila[1] = v.getOrigen();
+                fila[2] = v.getDestino();
+                fila[3] = v.getFechaSalida();
 
                 model.addRow(fila);
             }
@@ -696,31 +736,39 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
     }
 
     private void cargarVuelosEnTabla() {
+
         DefaultTableModel model = new DefaultTableModel();
+
         model.setColumnIdentifiers(
-                new Object[]{"ID", "Origen", "Destino", "Horario"}
+                new Object[]{
+                    "Código",
+                    "Origen",
+                    "Destino",
+                    "Fecha",
+                    "Aeronave ID"
+                }
         );
 
-        List<Vuelo> vuelo
-                = vueloController.listarVuelos();
+        listaVuelos = vueloController.listarVuelos();
 
-        for (Vuelo v : vuelo) {
+        for (Vuelo v : listaVuelos) {
 
             model.addRow(new Object[]{
                 v.getCodigo(),
                 v.getOrigen(),
                 v.getDestino(),
-                v.getFechaSalida()
+                v.getFechaSalida(),
+                v.getIdAeronave()
             });
         }
 
         tableVuelos.setModel(model);
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JComboBox<String> cbxAeronaveActiva;
     private javax.swing.JComboBox<String> cbxCopiloto;
     private javax.swing.JComboBox<String> cbxPiloto;
     private javax.swing.JButton jButton1;
@@ -752,6 +800,7 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
     private javax.swing.JLabel lblRegistro;
     private javax.swing.JList<String> listAsistentes;
     private javax.swing.JTable tableVuelos;
+    private javax.swing.JTextField txtAeronaveActiva;
     private javax.swing.JTextField txtBuscador;
     private javax.swing.JLabel txtusuario;
     // End of variables declaration//GEN-END:variables

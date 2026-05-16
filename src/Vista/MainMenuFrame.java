@@ -41,55 +41,52 @@ public class MainMenuFrame extends JFrame {
         gbc.insets = new Insets(20, 20, 20, 20);
         
         // Botón Mi Perfil (tu módulo)
-        JButton btnPerfil = crearBoton("Mi Perfil", "perfil.png", new Color(33, 150, 243));
+        JButton btnPerfil = crearBoton("Mi Perfil", new Color(33, 150, 243));
         btnPerfil.addActionListener(e -> abrirPerfil());
         gbc.gridx = 0;
         gbc.gridy = 0;
         buttonPanel.add(btnPerfil, gbc);
         
-        JButton btnAeronave = crearBoton(
-                "Aeronaves",
-                "avion.png",
-                new Color(0, 150, 136)
-        );
-
+        JButton btnAeronave = crearBoton("Aeronaves",new Color(0, 150, 136));
         btnAeronave.addActionListener(
                 e -> abrirAeronaves()
         );
-
         gbc.gridx = 1;
-
         buttonPanel.add(btnAeronave, gbc);
         
-        // Botones para otros módulos (vacíos para tus compañeros)
-//        JButton btnVuelos = crearBoton("Gestión de Vuelos", "vuelos.png", new Color(156, 39, 176));
-//        btnVuelos.addActionListener(e -> JOptionPane.showMessageDialog(this, 
-//            "Módulo de Vuelos - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
-//        gbc.gridx = 1;
-//        buttonPanel.add(btnVuelos, gbc);
         
-        JButton btnReservas = crearBoton("Mis Reservas", "reservas.png", new Color(255, 152, 0));
+        JButton btnVuelos = crearBoton("Gestión de Vuelos", new Color(156, 39, 176));
+        btnVuelos.addActionListener(e -> {
+            new GestionVuelosFrame().setVisible(true);
+            this.dispose();
+        });
+        
+        gbc.gridx = 2;
+        buttonPanel.add(btnVuelos, gbc);
+        
+        JButton btnReservas = crearBoton("Mis Reservas", new Color(255, 152, 0));
         btnReservas.addActionListener(e -> JOptionPane.showMessageDialog(this, 
             "Módulo de Reservas - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
-        gbc.gridx = 2;
-        buttonPanel.add(btnReservas, gbc);
-        
-        JButton btnPagos = crearBoton("Pagos", "pagos.png", new Color(76, 175, 80));
-        btnPagos.addActionListener(e -> JOptionPane.showMessageDialog(this, 
-            "Módulo de Pagos - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
         gbc.gridx = 0;
         gbc.gridy = 1;
+        buttonPanel.add(btnReservas, gbc);
+        
+        JButton btnPagos = crearBoton("Pagos", new Color(76, 175, 80));
+        btnPagos.addActionListener(e -> JOptionPane.showMessageDialog(this, 
+            "Módulo de Pagos - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
+        gbc.gridx = 1;
         buttonPanel.add(btnPagos, gbc);
         
-        JButton btnReportes = crearBoton("Reportes", "reportes.png", new Color(244, 67, 54));
+        JButton btnReportes = crearBoton("Reportes", new Color(244, 67, 54));
         btnReportes.addActionListener(e -> JOptionPane.showMessageDialog(this, 
             "Módulo de Reportes - Por implementar", "Próximamente", JOptionPane.INFORMATION_MESSAGE));
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         buttonPanel.add(btnReportes, gbc);
         
-        JButton btnCerrarSesion = crearBoton("Cerrar Sesión", "salir.png", new Color(120, 120, 120));
+        JButton btnCerrarSesion = crearBoton("Cerrar Sesión", new Color(120, 120, 120));
         btnCerrarSesion.addActionListener(e -> cerrarSesion());
-        gbc.gridx = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         buttonPanel.add(btnCerrarSesion, gbc);
         
         mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -98,7 +95,7 @@ public class MainMenuFrame extends JFrame {
         add(mainPanel);
     }
     
-    private JButton crearBoton(String texto, String icono, Color color) {
+    private JButton crearBoton(String texto, Color color) {
         JButton boton = new JButton(texto);
         boton.setBackground(color);
         boton.setForeground(Color.WHITE);

@@ -44,14 +44,15 @@ public class FrmDashboard extends javax.swing.JFrame {
         btnDashboard = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        btnEditarTripulacion = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         btnRegresar = new javax.swing.JButton();
         btnCerrarSesion = new javax.swing.JButton();
+        btnTripulacion = new javax.swing.JButton();
         content = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -119,42 +120,18 @@ public class FrmDashboard extends javax.swing.JFrame {
         });
         jPanel1.add(btnEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 120, -1));
 
-        jButton5.setBackground(new java.awt.Color(0, 51, 102));
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
-        jButton5.setText("Tripulación");
-        jButton5.setBorder(null);
-        jButton5.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnEditarTripulacion.setBackground(new java.awt.Color(0, 51, 102));
+        btnEditarTripulacion.setForeground(new java.awt.Color(255, 255, 255));
+        btnEditarTripulacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnEditarTripulacion.setText("Editar tripulación");
+        btnEditarTripulacion.setBorder(null);
+        btnEditarTripulacion.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnEditarTripulacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnEditarTripulacionActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 120, -1));
-
-        jButton6.setBackground(new java.awt.Color(0, 51, 102));
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
-        jButton6.setText("Dashboard");
-        jButton6.setBorder(null);
-        jButton6.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 120, -1));
-
-        jButton7.setBackground(new java.awt.Color(0, 51, 102));
-        jButton7.setForeground(new java.awt.Color(255, 255, 255));
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
-        jButton7.setText("Dashboard");
-        jButton7.setBorder(null);
-        jButton7.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        jPanel1.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 120, -1));
-
-        jButton8.setBackground(new java.awt.Color(0, 51, 102));
-        jButton8.setForeground(new java.awt.Color(255, 255, 255));
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
-        jButton8.setText("Dashboard");
-        jButton8.setBorder(null);
-        jButton8.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        jPanel1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, 120, -1));
+        jPanel1.add(btnEditarTripulacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 120, -1));
 
         jLabel7.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -182,10 +159,37 @@ public class FrmDashboard extends javax.swing.JFrame {
         });
         jPanel1.add(btnCerrarSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 440, 120, 30));
 
+        btnTripulacion.setBackground(new java.awt.Color(0, 51, 102));
+        btnTripulacion.setForeground(new java.awt.Color(255, 255, 255));
+        btnTripulacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnTripulacion.setText("Registrar tripulación");
+        btnTripulacion.setBorder(null);
+        btnTripulacion.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnTripulacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTripulacionActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnTripulacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 130, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 160, 490));
 
         content.setBackground(new java.awt.Color(225, 238, 250));
         content.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel4.setFont(new java.awt.Font("Yu Gothic UI", 0, 10)); // NOI18N
+        jLabel4.setText("AIRWAYS");
+        jLabel4.setToolTipText("");
+        content.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 240, 70, 10));
+
+        jLabel8.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
+        jLabel8.setText("SKYLINE");
+        jLabel8.setToolTipText("");
+        content.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 220, 80, -1));
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
+        content.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 220, 40, 40));
+
         getContentPane().add(content, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 740, 490));
 
         pack();
@@ -224,15 +228,20 @@ public class FrmDashboard extends javax.swing.JFrame {
         this.cerrarSesion();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        JPanelRegistrarTripulación trip = new JPanelRegistrarTripulación();
+    private void btnEditarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarTripulacionActionPerformed
+        JPanelEditarTripulación trip = new JPanelEditarTripulación();
         ShowPanel(trip);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnEditarTripulacionActionPerformed
 
     private void btnOperacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOperacionesActionPerformed
         JPanelAsignarTripulante asignar = new JPanelAsignarTripulante();
         ShowPanel(asignar);
     }//GEN-LAST:event_btnOperacionesActionPerformed
+
+    private void btnTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTripulacionActionPerformed
+        JPanelRegistrarTripulación trip = new JPanelRegistrarTripulación();
+        ShowPanel(trip);
+    }//GEN-LAST:event_btnTripulacionActionPerformed
 
     private void ShowPanel(JPanel p){
         p.setSize(740, 490);
@@ -291,17 +300,18 @@ public class FrmDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnDashboard;
     private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEditarTripulacion;
     private javax.swing.JButton btnOperaciones;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnRegresar;
+    private javax.swing.JButton btnTripulacion;
     private javax.swing.JPanel content;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;

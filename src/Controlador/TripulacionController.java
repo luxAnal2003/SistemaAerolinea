@@ -19,7 +19,7 @@ import java.util.List;
  * @author admin
  */
 public class TripulacionController {
-    
+
     public boolean crearTripu(Tripulacion trip) {
 
         if (!validarDatosTrip(trip)) {
@@ -59,12 +59,39 @@ public class TripulacionController {
                 }
     }
 
+    public boolean actualizarTripu(Tripulacion t) {
+
+        String sql = "UPDATE tripulacion "
+                + "SET nombre=?, apellido=?, cedula=?, licencia=?, rol=? "
+                + "WHERE id_tripulante=?";
+
+        try (
+                Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, t.getNombre());
+            ps.setString(2, t.getApellido());
+            ps.setString(3, t.getCedula());
+            ps.setString(4, t.getLicencia());
+            ps.setString(5, t.getRol());
+
+            ps.setInt(6, t.getIdTripulante());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+
+            System.out.println("Error actualizar: " + e.getMessage());
+
+            return false;
+        }
+    }
+
     private boolean validarDatosTrip(Tripulacion trip) {
         if (trip == null) {
             return false;
         }
-        
-        if (trip.getCedula() == null|| trip.getCedula().trim().isEmpty()) {
+
+        if (trip.getCedula() == null || trip.getCedula().trim().isEmpty()) {
             System.err.println("La cédula es obligatoria");
             return false;
         }
@@ -73,9 +100,9 @@ public class TripulacionController {
             System.err.println("La cédula debe contener exactamente 10 números");
             return false;
         }
-        
+
         if (existeCedula(trip.getCedula())) {
-            System.err.println("Ya existe un tripulante "+ "con esa cédula");
+            System.err.println("Ya existe un tripulante " + "con esa cédula");
             return false;
         }
 
@@ -88,24 +115,24 @@ public class TripulacionController {
             System.err.println("El apellido es obligatorio");
             return false;
         }
-        
-        if (trip.getRol()== null || trip.getRol().trim().isEmpty()) {
+
+        if (trip.getRol() == null || trip.getRol().trim().isEmpty()) {
             System.err.println("El rol es obligatorio");
             return false;
         }
-        
-        if (trip.getLicencia()== null|| trip.getLicencia().trim().isEmpty()) {
+
+        if (trip.getLicencia() == null || trip.getLicencia().trim().isEmpty()) {
             System.err.println("La licencia es obligatoria");
             return false;
         }
-        
-        if (existeLicencia( trip.getLicencia())) {
-            System.err.println( "Ya existe un tripulante " + "con esa licencia");
+
+        if (existeLicencia(trip.getLicencia())) {
+            System.err.println("Ya existe un tripulante " + "con esa licencia");
             return false;
         }
         return true;
     }
-    
+
     private boolean existeCedula(String cedula) {
         String sql
                 = "SELECT id_tripulante "
@@ -114,15 +141,15 @@ public class TripulacionController {
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
             stmt.setString(1, cedula);
             ResultSet rs = stmt.executeQuery();
-            
+
             return rs.next();
         } catch (SQLException e) {
             System.err.println("Error al verificar cédula: " + e.getMessage());
-            
+
             return false;
         }
     }
-    
+
     private boolean existeLicencia(String licencia) {
         String sql
                 = "SELECT id_tripulante "
@@ -131,16 +158,17 @@ public class TripulacionController {
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
             stmt.setString(1, licencia);
             ResultSet rs = stmt.executeQuery();
-            
+
             return rs.next();
         } catch (SQLException e) {
             System.err.println("Error al verificar licencia: " + e.getMessage());
-            
+
             return false;
         }
     }
+
     public List<Tripulacion> listarTripulacion() {
-        List<Tripulacion> lista= new ArrayList<>();
+        List<Tripulacion> lista = new ArrayList<>();
         String sql = "SELECT * FROM tripulacion";
 
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -153,19 +181,20 @@ public class TripulacionController {
         }
         return lista;
     }
-            
-    private Tripulacion mapResultSetToTripulacion(ResultSet rs)throws SQLException {
+
+    private Tripulacion mapResultSetToTripulacion(ResultSet rs) throws SQLException {
         Tripulacion t = new Tripulacion();
-        
+
         t.setIdTripulante(rs.getInt("id_tripulante"));
         t.setNombre(rs.getString("nombre"));
         t.setApellido(rs.getString("apellido"));
+        t.setCedula(rs.getString("cedula"));
         t.setRol(rs.getString("rol"));
         t.setLicencia(rs.getString("licencia"));
-        
+
         return t;
     }
-    
+
     public List<Tripulacion> buscarTripulacion(String criterio) {
 
         List<Tripulacion> tripulacion = new ArrayList<>();

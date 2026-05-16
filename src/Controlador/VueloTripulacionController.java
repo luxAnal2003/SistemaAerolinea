@@ -3,10 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Controlador;
+
+import Modelo.Aeronave;
+import Modelo.Tripulacion;
 import utils.DatabaseConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import modelo.Vuelo;
 
 /**
  *
@@ -14,89 +19,142 @@ import java.sql.SQLException;
  */
 public class VueloTripulacionController {
     
-    public boolean asignarTripulante(
-            int idVuelo,
-            int idTripulante
+    public boolean guardarAsignacion(
+        Vuelo vuelo,
+        Tripulacion piloto,
+        Tripulacion copiloto,
+        List<Tripulacion> asistentes
+) {
+
+    String sql = "INSERT INTO vuelo_tripulacion "
+            + "(codigo_vuelo, id_tripulante) "
+            + "VALUES (?, ?)";
+
+    try (
+            java.sql.Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)
     ) {
-        if (!tripulanteDisponible(idVuelo, idTripulante)) {
 
-            System.err.println(
-                    "El tripulante ya está asignado "
-                    + "a un vuelo simultáneo"
-            );
+        // =========================
+        // PILOTO
+        // =========================
+        ps.setString(1, vuelo.getCodigo());
+        ps.setInt(2, piloto.getIdTripulante());
+        ps.executeUpdate();
 
-            return false;
+        // =========================
+        // COPILOTO
+        // =========================
+        ps.setString(1, vuelo.getCodigo());
+        ps.setInt(2, copiloto.getIdTripulante());
+        ps.executeUpdate();
+
+        // =========================
+        // ASISTENTES
+        // =========================
+        for (Tripulacion t : asistentes) {
+
+            ps.setString(1, vuelo.getCodigo());
+            ps.setInt(2, t.getIdTripulante());
+
+            ps.executeUpdate();
         }
 
-        String sql =
-                "INSERT INTO vuelo_tripulacion "
-                + "(id_vuelo, id_tripulante) "
-                + "VALUES (?, ?)";
+        return true;
 
-        try (
-                PreparedStatement stmt =
-                        DatabaseConnection
-                                .getConnection()
-                                .prepareStatement(sql)
-        ) {
+    } catch (SQLException e) {
 
-            stmt.setInt(1, idVuelo);
-            stmt.setInt(2, idTripulante);
+        System.out.println(
+                "Error guardando asignación: "
+                + e.getMessage()
+        );
 
-            int resultado = stmt.executeUpdate();
+        return false;
+    }
+}
+    public String validarAsignacion(
+            Aeronave aeronave,
+            Tripulacion piloto,
+            Tripulacion copiloto,
+            List<Tripulacion> asistentes
+    ) {
 
-            return resultado > 0;
-
-        } catch (SQLException e) {
-
-            System.err.println(
-                    "Error al asignar tripulación: "
-                    + e.getMessage()
-            );
-
-            return false;
+        if (aeronave == null) {
+            return "Seleccione una aeronave";
         }
+
+        if (piloto == null) {
+            return "Debe seleccionar un piloto";
+        }
+
+        if (copiloto == null) {
+            return "Debe seleccionar un copiloto";
+        }
+
+        if (asistentes == null || asistentes.size() < 5) {
+            return "Debe seleccionar mínimo 5 asistentes";
+        }
+
+        if (asistentes.size() > 5) {
+            return "Solo puede seleccionar máximo 5 asistentes";
+        }
+
+        if (aeronave.getEstado().equalsIgnoreCase("Mantenimiento")) {
+            return "La aeronave está en mantenimiento";
+        }
+
+        return null;
     }
 
-    private boolean tripulanteDisponible(
-            int idVuelo,
-            int idTripulante
+    public String generarResumen(
+            Vuelo vuelo,
+            Aeronave aeronave,
+            Tripulacion piloto,
+            Tripulacion copiloto,
+            List<Tripulacion> asistentes
     ) {
 
-        String sql =
-                "SELECT vt.id_asignacion "
-                + "FROM vuelo_tripulacion vt "
-                + "INNER JOIN vuelos v "
-                + "ON vt.id_vuelo = v.id_vuelo "
-                + "WHERE vt.id_tripulante = ? "
-                + "AND v.fecha_salida = ( "
-                + "SELECT fecha_salida "
-                + "FROM vuelos "
-                + "WHERE id_vuelo = ? "
-                + ")";
+        StringBuilder sb = new StringBuilder();
 
-        try (
-                PreparedStatement stmt =
-                        DatabaseConnection
-                                .getConnection()
-                                .prepareStatement(sql)
-        ) {
+        sb.append("=== ASIGNACIÓN OPERATIVA ===\n\n");
 
-            stmt.setInt(1, idTripulante);
-            stmt.setInt(2, idVuelo);
+        sb.append("Vuelo: ")
+                .append(vuelo.getCodigo())
+                .append("\n");
 
-            ResultSet rs = stmt.executeQuery();
+        sb.append("Ruta: ")
+                .append(vuelo.getOrigen())
+                .append(" → ")
+                .append(vuelo.getDestino())
+                .append("\n\n");
 
-            return !rs.next();
+        sb.append("Aeronave: ")
+                .append(aeronave.getModelo())
+                .append("\n\n");
 
-        } catch (SQLException e) {
+        sb.append("Piloto: ")
+                .append(piloto.getNombre())
+                .append(" ")
+                .append(piloto.getApellido())
+                .append("\n");
 
-            System.err.println(
-                    "Error validando disponibilidad: "
-                    + e.getMessage()
-            );
+        sb.append("Copiloto: ")
+                .append(copiloto.getNombre())
+                .append(" ")
+                .append(copiloto.getApellido())
+                .append("\n\n");
 
-            return false;
+        sb.append("Asistentes:\n");
+
+        for (Tripulacion t : asistentes) {
+
+            sb.append("- ")
+                    .append(t.getNombre())
+                    .append(" ")
+                    .append(t.getApellido())
+                    .append("\n");
         }
+
+        return sb.toString();
     }
 }

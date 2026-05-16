@@ -9,11 +9,12 @@ public class Vuelo {
     private String horaSalida;  
     private String horaLlegada; 
     private int cupos;          
-    private String estado;      
+    private String estado;
+    private int idAeronave;
 
    
     public Vuelo(String codigo, String aerolinea, String origen, String destino, 
-                 String fechaSalida, String horaSalida, String horaLlegada, int cupos, String estado) {
+                 String fechaSalida, String horaSalida, String horaLlegada, int cupos, String estado, int idAeronave) {
         this.codigo = codigo;
         this.aerolinea = aerolinea;
         this.origen = origen;
@@ -23,10 +24,19 @@ public class Vuelo {
         this.horaLlegada = horaLlegada;
         this.cupos = cupos;
         this.estado = estado;
+        this.idAeronave = idAeronave;
     }
 
     public String getCodigo() {
         return codigo;
+    }
+
+    public int getIdAeronave() {
+        return idAeronave;
+    }
+
+    public void setIdAeronave(int idAeronave) {
+        this.idAeronave = idAeronave;
     }
 
     public void setCodigo(String codigo) {

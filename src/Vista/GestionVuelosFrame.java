@@ -1,5 +1,10 @@
+// ============================
+// VISTA: GestionVuelosFrame.java
+// ============================
 package vista;
 
+import Modelo.Aeronave;
+import controlador.VueloController;
 import modelo.Vuelo;
 import utils.DatabaseConnection;
 
@@ -13,12 +18,9 @@ import java.util.List;
 
 public class GestionVuelosFrame extends JFrame {
 
-    // ================= TABLA =================
-
     private JTable tablaVuelos;
     private DefaultTableModel modeloTabla;
-
-    // ================= CAMPOS =================
+    private VueloController vueloController;
 
     private JTextField txtCodigo;
     private JTextField txtAerolinea;
@@ -29,19 +31,18 @@ public class GestionVuelosFrame extends JFrame {
     private JTextField txtHoraL;
     private JTextField txtCupos;
 
-    // ================= BUSQUEDA =================
-
     private JTextField txtBuscar;
 
-    // ================= COMBO =================
-
     private JComboBox<String> cbEstado;
+    private JComboBox<String> cbAeronave;
 
-    // ================= CONSTRUCTOR =================
+    private List<Aeronave> listaAeronaves;
 
     public GestionVuelosFrame() {
 
-        setTitle("Gestión de Vuelos - Panel Administrativo");
+        vueloController = new VueloController();
+
+        setTitle("Gestión de Vuelos");
 
         setSize(1250, 700);
 
@@ -51,10 +52,10 @@ public class GestionVuelosFrame extends JFrame {
 
         initComponents();
 
+        cargarAeronaves();
+
         cargarDatosEnTabla();
     }
-
-    // ================= COMPONENTES =================
 
     private void initComponents() {
 
@@ -65,22 +66,22 @@ public class GestionVuelosFrame extends JFrame {
 
         mainPanel.setBackground(new Color(240, 240, 240));
 
-        // =========================================================
-        // PANEL IZQUIERDO
-        // =========================================================
-
+        // =========================================
+        // PANEL FORMULARIO
+        // =========================================
         JPanel panelForm = new JPanel(new GridBagLayout());
 
-        panelForm.setPreferredSize(new Dimension(330, 0));
+        panelForm.setPreferredSize(new Dimension(340, 0));
+
+        panelForm.setBackground(Color.WHITE);
 
         panelForm.setBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createLineBorder(
                                 new Color(52, 152, 219), 2),
                         "Datos del Vuelo"
-                ));
-
-        panelForm.setBackground(Color.WHITE);
+                )
+        );
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -88,52 +89,54 @@ public class GestionVuelosFrame extends JFrame {
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // ================= CAMPOS =================
-
         txtCodigo = new JTextField();
-
         txtAerolinea = new JTextField();
-
         txtOrigen = new JTextField();
-
         txtDestino = new JTextField();
-
         txtFecha = new JTextField();
-
         txtHoraS = new JTextField();
-
         txtHoraL = new JTextField();
-
         txtCupos = new JTextField();
 
-        cbEstado = new JComboBox<>(
-                new String[]{
-                    "Programado",
-                    "En Vuelo",
-                    "Aterrizado",
-                    "Cancelado"
-                });
+        cbEstado = new JComboBox<>(new String[]{
+            "Programado",
+            "En Vuelo",
+            "Aterrizado",
+            "Cancelado"
+        });
+
+        cbAeronave = new JComboBox<>();
 
         agregarCampo(panelForm, "Código:", txtCodigo, gbc, 0);
-
         agregarCampo(panelForm, "Aerolínea:", txtAerolinea, gbc, 1);
-
         agregarCampo(panelForm, "Origen:", txtOrigen, gbc, 2);
-
         agregarCampo(panelForm, "Destino:", txtDestino, gbc, 3);
-
         agregarCampo(panelForm, "Fecha:", txtFecha, gbc, 4);
-
         agregarCampo(panelForm, "Hora Salida:", txtHoraS, gbc, 5);
-
         agregarCampo(panelForm, "Hora Llegada:", txtHoraL, gbc, 6);
-
         agregarCampo(panelForm, "Cupos:", txtCupos, gbc, 7);
 
-        // ================= ESTADO =================
-
+        // =========================================
+        // AERONAVE
+        // =========================================
         gbc.gridx = 0;
         gbc.gridy = 8;
+
+        JLabel lblAeronave = new JLabel("Aeronave:");
+
+        lblAeronave.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+        panelForm.add(lblAeronave, gbc);
+
+        gbc.gridx = 1;
+
+        panelForm.add(cbAeronave, gbc);
+
+        // =========================================
+        // ESTADO
+        // =========================================
+        gbc.gridx = 0;
+        gbc.gridy = 9;
 
         JLabel lblEstado = new JLabel("Estado:");
 
@@ -145,69 +148,59 @@ public class GestionVuelosFrame extends JFrame {
 
         panelForm.add(cbEstado, gbc);
 
-        // =========================================================
+        // =========================================
         // BOTONES
-        // =========================================================
-
+        // =========================================
         JPanel panelBotones = new JPanel(new GridLayout(3, 2, 10, 10));
 
         panelBotones.setBackground(Color.WHITE);
 
-        JButton btnRegistrar = crearBoton(
-                "Registrar",
-                new Color(46, 204, 113));
+        JButton btnRegistrar
+                = crearBoton("Registrar",
+                        new Color(46, 204, 113));
 
-        JButton btnActualizar = crearBoton(
-                "Actualizar",
-                new Color(52, 152, 219));
+        JButton btnActualizar
+                = crearBoton("Actualizar",
+                        new Color(52, 152, 219));
 
-        JButton btnCancelar = crearBoton(
-                "Cancelar",
-                new Color(231, 76, 60));
+        JButton btnCancelar
+                = crearBoton("Cancelar",
+                        new Color(231, 76, 60));
 
-        JButton btnLimpiar = crearBoton(
-                "Limpiar",
-                new Color(241, 196, 15));
+        JButton btnLimpiar
+                = crearBoton("Limpiar",
+                        new Color(241, 196, 15));
 
-        JButton btnRecargar = crearBoton(
-                "Recargar",
-                new Color(155, 89, 182));
+        JButton btnRecargar
+                = crearBoton("Recargar",
+                        new Color(155, 89, 182));
 
-        JButton btnVolver = crearBoton(
-                "Volver",
-                new Color(127, 140, 141));
+        JButton btnVolver
+                = crearBoton("Volver",
+                        new Color(127, 140, 141));
 
         panelBotones.add(btnRegistrar);
-
         panelBotones.add(btnActualizar);
-
         panelBotones.add(btnCancelar);
-
         panelBotones.add(btnLimpiar);
-
         panelBotones.add(btnRecargar);
-
         panelBotones.add(btnVolver);
 
         gbc.gridx = 0;
-
-        gbc.gridy = 9;
-
+        gbc.gridy = 10;
         gbc.gridwidth = 2;
 
         panelForm.add(panelBotones, gbc);
 
-        // =========================================================
+        // =========================================
         // PANEL DERECHO
-        // =========================================================
-
+        // =========================================
         JPanel panelDerecho = new JPanel(new BorderLayout(10, 10));
 
         panelDerecho.setBackground(Color.WHITE);
 
-        // ================= BUSQUEDA =================
-
-        JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel panelBusqueda
+                = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         panelBusqueda.setBackground(Color.WHITE);
 
@@ -216,29 +209,27 @@ public class GestionVuelosFrame extends JFrame {
                         BorderFactory.createLineBorder(
                                 new Color(52, 152, 219), 2),
                         "Buscar Vuelos"
-                ));
+                )
+        );
 
         txtBuscar = new JTextField(20);
 
-        JButton btnBuscar = crearBoton(
-                "Buscar",
-                new Color(230, 126, 34));
+        JButton btnBuscar
+                = crearBoton("Buscar",
+                        new Color(230, 126, 34));
 
-        JButton btnMostrarTodos = crearBoton(
-                "Mostrar Todos",
-                new Color(52, 73, 94));
+        JButton btnMostrarTodos
+                = crearBoton("Mostrar Todos",
+                        new Color(52, 73, 94));
 
-        panelBusqueda.add(
-                new JLabel("Código o Aerolínea:"));
-
+        panelBusqueda.add(new JLabel("Código o Aerolínea:"));
         panelBusqueda.add(txtBuscar);
-
         panelBusqueda.add(btnBuscar);
-
         panelBusqueda.add(btnMostrarTodos);
 
-        // ================= TABLA =================
-
+        // =========================================
+        // TABLA
+        // =========================================
         modeloTabla = new DefaultTableModel(
                 new Object[]{
                     "Código",
@@ -249,8 +240,10 @@ public class GestionVuelosFrame extends JFrame {
                     "Hora Salida",
                     "Hora Llegada",
                     "Cupos",
-                    "Estado"
-                }, 0);
+                    "Estado",
+                    "ID Aeronave"
+                }, 0
+        );
 
         tablaVuelos = new JTable(modeloTabla);
 
@@ -270,12 +263,8 @@ public class GestionVuelosFrame extends JFrame {
         tablaVuelos.setSelectionBackground(
                 new Color(52, 152, 219));
 
-        tablaVuelos.setSelectionForeground(Color.WHITE);
-
-        // ================= CENTRAR TABLA =================
-
-        DefaultTableCellRenderer center =
-                new DefaultTableCellRenderer();
+        DefaultTableCellRenderer center
+                = new DefaultTableCellRenderer();
 
         center.setHorizontalAlignment(JLabel.CENTER);
 
@@ -286,16 +275,12 @@ public class GestionVuelosFrame extends JFrame {
                     .setCellRenderer(center);
         }
 
-        JScrollPane scrollPane =
-                new JScrollPane(tablaVuelos);
-
-        // ================= AGREGAR DERECHO =================
+        JScrollPane scrollPane
+                = new JScrollPane(tablaVuelos);
 
         panelDerecho.add(panelBusqueda, BorderLayout.NORTH);
 
         panelDerecho.add(scrollPane, BorderLayout.CENTER);
-
-        // ================= MAIN =================
 
         mainPanel.add(panelForm, BorderLayout.WEST);
 
@@ -303,112 +288,91 @@ public class GestionVuelosFrame extends JFrame {
 
         add(mainPanel);
 
-        // =========================================================
+        // =========================================
         // EVENTOS
-        // =========================================================
+        // =========================================
+        btnRegistrar.addActionListener(e -> registrarVuelo());
 
-        btnRegistrar.addActionListener(
-                e -> registrarVuelo());
+        btnActualizar.addActionListener(e -> actualizarVuelo());
 
-        btnActualizar.addActionListener(
-                e -> actualizarVuelo());
+        btnCancelar.addActionListener(e -> cancelarVuelo());
 
-        btnCancelar.addActionListener(
-                e -> cancelarVuelo());
+        btnLimpiar.addActionListener(e -> limpiarCampos());
 
-        btnLimpiar.addActionListener(
-                e -> limpiarCampos());
+        btnRecargar.addActionListener(e -> cargarDatosEnTabla());
 
-        btnRecargar.addActionListener(
-                e -> cargarDatosEnTabla());
-
-        btnBuscar.addActionListener(
-                e -> buscarVuelo());
+        btnBuscar.addActionListener(e -> buscarVuelo());
 
         btnMostrarTodos.addActionListener(
                 e -> cargarDatosEnTabla());
 
         btnVolver.addActionListener(e -> {
-
             new MainMenuFrame().setVisible(true);
-
             dispose();
         });
 
         tablaVuelos.getSelectionModel()
                 .addListSelectionListener(e -> {
 
-            int fila = tablaVuelos.getSelectedRow();
+                    int fila = tablaVuelos.getSelectedRow();
 
-            if (fila != -1) {
+                    if (fila != -1) {
 
-                llenarCampos(fila);
+                        llenarCampos(fila);
+                    }
+                });
+    }
+
+    // =========================================
+    // CARGAR AERONAVES
+    // =========================================
+    private void cargarAeronaves() {
+
+        listaAeronaves = new ArrayList<>();
+
+        cbAeronave.removeAllItems();
+
+        String sql = "SELECT * FROM aeronaves";
+
+        try (
+                Connection con = DatabaseConnection.getConnection(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+
+                Aeronave a = new Aeronave();
+
+                a.setIdAeronave(rs.getInt("id_aeronave"));
+                a.setModelo(rs.getString("modelo"));
+
+                listaAeronaves.add(a);
+
+                cbAeronave.addItem(
+                        a.getIdAeronave()
+                        + " - "
+                        + a.getModelo()
+                );
             }
-        });
+
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error cargando aeronaves"
+            );
+        }
     }
 
-    // =========================================================
-    // CREAR BOTONES
-    // =========================================================
-
-    private JButton crearBoton(String texto, Color color) {
-
-        JButton btn = new JButton(texto);
-
-        btn.setFont(
-                new Font("Segoe UI", Font.BOLD, 13));
-
-        btn.setBackground(color);
-
-        btn.setForeground(Color.WHITE);
-
-        btn.setFocusPainted(false);
-
-        btn.setBorderPainted(false);
-
-        btn.setOpaque(true);
-
-        btn.setCursor(
-                new Cursor(Cursor.HAND_CURSOR));
-
-        return btn;
-    }
-
-    // =========================================================
-    // AGREGAR CAMPOS
-    // =========================================================
-
-    private void agregarCampo(
-            JPanel panel,
-            String texto,
-            JTextField campo,
-            GridBagConstraints gbc,
-            int y) {
-
-        gbc.gridx = 0;
-
-        gbc.gridy = y;
-
-        JLabel lbl = new JLabel(texto);
-
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 14));
-
-        panel.add(lbl, gbc);
-
-        gbc.gridx = 1;
-
-        campo.setPreferredSize(new Dimension(180, 30));
-
-        panel.add(campo, gbc);
-    }
-
-    // =========================================================
+    // =========================================
     // REGISTRAR
-    // =========================================================
-
+    // =========================================
     private void registrarVuelo() {
 
         try {
+
+            int index = cbAeronave.getSelectedIndex();
+
+            int idAeronave
+                    = listaAeronaves.get(index).getIdAeronave();
 
             Vuelo v = new Vuelo(
                     txtCodigo.getText(),
@@ -419,14 +383,18 @@ public class GestionVuelosFrame extends JFrame {
                     txtHoraS.getText(),
                     txtHoraL.getText(),
                     Integer.parseInt(txtCupos.getText()),
-                    cbEstado.getSelectedItem().toString()
+                    cbEstado.getSelectedItem().toString(),
+                    idAeronave
             );
 
-            if (registrar(v)) {
+            boolean registrado = vueloController.registrar(v);
 
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Vuelo registrado");
+            JOptionPane.showMessageDialog(
+                    this,
+                    vueloController.getMensaje()
+            );
+
+            if (registrado) {
 
                 cargarDatosEnTabla();
 
@@ -437,17 +405,22 @@ public class GestionVuelosFrame extends JFrame {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Error en datos");
+                    "Error al registrar: " + e.getMessage()
+            );
         }
     }
 
-    // =========================================================
+    // =========================================
     // ACTUALIZAR
-    // =========================================================
-
+    // =========================================
     private void actualizarVuelo() {
 
         try {
+
+            int index = cbAeronave.getSelectedIndex();
+
+            int idAeronave
+                    = listaAeronaves.get(index).getIdAeronave();
 
             Vuelo v = new Vuelo(
                     txtCodigo.getText(),
@@ -458,44 +431,41 @@ public class GestionVuelosFrame extends JFrame {
                     txtHoraS.getText(),
                     txtHoraL.getText(),
                     Integer.parseInt(txtCupos.getText()),
-                    cbEstado.getSelectedItem().toString()
+                    cbEstado.getSelectedItem().toString(),
+                    idAeronave
             );
 
-            if (actualizar(v)) {
+            boolean actualizado = vueloController.actualizar(v);
 
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Vuelo actualizado");
+            JOptionPane.showMessageDialog(
+                    this,
+                    vueloController.getMensaje()
+            );
+
+            if (actualizado) {
 
                 cargarDatosEnTabla();
+
+                limpiarCampos();
             }
 
         } catch (Exception e) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Error al actualizar");
+                    "Error al actualizar: " + e.getMessage()
+            );
         }
     }
 
-    // =========================================================
+    // =========================================
     // CANCELAR
-    // =========================================================
-
+    // =========================================
     private void cancelarVuelo() {
 
         String codigo = txtCodigo.getText();
 
-        if (codigo.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un vuelo");
-
-            return;
-        }
-
-        if (cancelar(codigo)) {
+        if (vueloController.cancelar(codigo)) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -505,60 +475,63 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================================
+    // =========================================
     // BUSCAR
-    // =========================================================
-
+    // =========================================
     private void buscarVuelo() {
-
-        String texto = txtBuscar.getText();
 
         modeloTabla.setRowCount(0);
 
-        String sql =
-                "SELECT * FROM vuelos "
-                + "WHERE codigo LIKE ? "
-                + "OR aerolinea LIKE ?";
+        List<Vuelo> lista
+                = vueloController.buscarVuelo(
+                        txtBuscar.getText());
 
-        try (
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps =
-                    con.prepareStatement(sql)
-        ) {
+        for (Vuelo v : lista) {
 
-            ps.setString(1, "%" + texto + "%");
-
-            ps.setString(2, "%" + texto + "%");
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                modeloTabla.addRow(new Object[]{
-                    rs.getString("codigo"),
-                    rs.getString("aerolinea"),
-                    rs.getString("origen"),
-                    rs.getString("destino"),
-                    rs.getString("fecha_salida"),
-                    rs.getString("hora_salida"),
-                    rs.getString("hora_llegada"),
-                    rs.getInt("cupos"),
-                    rs.getString("estado")
-                });
-            }
-
-        } catch (SQLException e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error búsqueda");
+            modeloTabla.addRow(new Object[]{
+                v.getCodigo(),
+                v.getAerolinea(),
+                v.getOrigen(),
+                v.getDestino(),
+                v.getFechaSalida(),
+                v.getHoraSalida(),
+                v.getHoraLlegada(),
+                v.getCupos(),
+                v.getEstado(),
+                v.getIdAeronave()
+            });
         }
     }
 
-    // =========================================================
-    // LLENAR CAMPOS
-    // =========================================================
+    // =========================================
+    // TABLA
+    // =========================================
+    private void cargarDatosEnTabla() {
 
+        modeloTabla.setRowCount(0);
+
+        List<Vuelo> lista = vueloController.listarVuelos();
+
+        for (Vuelo v : lista) {
+
+            modeloTabla.addRow(new Object[]{
+                v.getCodigo(),
+                v.getAerolinea(),
+                v.getOrigen(),
+                v.getDestino(),
+                v.getFechaSalida(),
+                v.getHoraSalida(),
+                v.getHoraLlegada(),
+                v.getCupos(),
+                v.getEstado(),
+                v.getIdAeronave()
+            });
+        }
+    }
+
+    // =========================================
+    // LLENAR CAMPOS
+    // =========================================
     private void llenarCampos(int fila) {
 
         txtCodigo.setText(
@@ -587,193 +560,91 @@ public class GestionVuelosFrame extends JFrame {
 
         cbEstado.setSelectedItem(
                 modeloTabla.getValueAt(fila, 8).toString());
+
+        int idAeronave = Integer.parseInt(
+                modeloTabla.getValueAt(fila, 9).toString()
+        );
+
+        for (int i = 0; i < listaAeronaves.size(); i++) {
+
+            if (listaAeronaves.get(i).getIdAeronave() == idAeronave) {
+
+                cbAeronave.setSelectedIndex(i);
+
+                break;
+            }
+        }
     }
 
-    // =========================================================
+    // =========================================
     // LIMPIAR
-    // =========================================================
-
+    // =========================================
     private void limpiarCampos() {
 
         txtCodigo.setText("");
-
         txtAerolinea.setText("");
-
         txtOrigen.setText("");
-
         txtDestino.setText("");
-
         txtFecha.setText("");
-
         txtHoraS.setText("");
-
         txtHoraL.setText("");
-
         txtCupos.setText("");
 
         cbEstado.setSelectedIndex(0);
+
+        cbAeronave.setSelectedIndex(0);
     }
 
-    // =========================================================
-    // CARGAR TABLA
-    // =========================================================
+    // =========================================
+    // BOTONES
+    // =========================================
+    private JButton crearBoton(String texto, Color color) {
 
-    private void cargarDatosEnTabla() {
+        JButton btn = new JButton(texto);
 
-        modeloTabla.setRowCount(0);
+        btn.setFont(
+                new Font("Segoe UI", Font.BOLD, 13));
 
-        List<Vuelo> lista = obtenerTodos();
+        btn.setBackground(color);
 
-        for (Vuelo v : lista) {
+        btn.setForeground(Color.WHITE);
 
-            modeloTabla.addRow(new Object[]{
-                v.getCodigo(),
-                v.getAerolinea(),
-                v.getOrigen(),
-                v.getDestino(),
-                v.getFechaSalida(),
-                v.getHoraSalida(),
-                v.getHoraLlegada(),
-                v.getCupos(),
-                v.getEstado()
-            });
-        }
+        btn.setFocusPainted(false);
+
+        btn.setBorderPainted(false);
+
+        btn.setCursor(
+                new Cursor(Cursor.HAND_CURSOR));
+
+        return btn;
     }
 
-    // =========================================================
-    // SQL REGISTRAR
-    // =========================================================
+    // =========================================
+    // CAMPOS
+    // =========================================
+    private void agregarCampo(
+            JPanel panel,
+            String texto,
+            JTextField campo,
+            GridBagConstraints gbc,
+            int y
+    ) {
 
-    public boolean registrar(Vuelo v) {
+        gbc.gridx = 0;
+        gbc.gridy = y;
 
-        String sql =
-                "INSERT INTO vuelos VALUES "
-                + "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        JLabel lbl = new JLabel(texto);
 
-        try (
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps =
-                    con.prepareStatement(sql)
-        ) {
+        lbl.setFont(
+                new Font("Segoe UI", Font.BOLD, 14));
 
-            ps.setString(1, v.getCodigo());
-            ps.setString(2, v.getAerolinea());
-            ps.setString(3, v.getOrigen());
-            ps.setString(4, v.getDestino());
-            ps.setString(5, v.getFechaSalida());
-            ps.setString(6, v.getHoraSalida());
-            ps.setString(7, v.getHoraLlegada());
-            ps.setInt(8, v.getCupos());
-            ps.setString(9, v.getEstado());
+        panel.add(lbl, gbc);
 
-            return ps.executeUpdate() > 0;
+        gbc.gridx = 1;
 
-        } catch (SQLException e) {
+        campo.setPreferredSize(
+                new Dimension(180, 30));
 
-            return false;
-        }
-    }
-
-    // =========================================================
-    // SQL ACTUALIZAR
-    // =========================================================
-
-    public boolean actualizar(Vuelo v) {
-
-        String sql =
-                "UPDATE vuelos SET aerolinea=?, "
-                + "origen=?, destino=?, fecha_salida=?, "
-                + "hora_salida=?, hora_llegada=?, "
-                + "cupos=?, estado=? WHERE codigo=?";
-
-        try (
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps =
-                    con.prepareStatement(sql)
-        ) {
-
-            ps.setString(1, v.getAerolinea());
-            ps.setString(2, v.getOrigen());
-            ps.setString(3, v.getDestino());
-            ps.setString(4, v.getFechaSalida());
-            ps.setString(5, v.getHoraSalida());
-            ps.setString(6, v.getHoraLlegada());
-            ps.setInt(7, v.getCupos());
-            ps.setString(8, v.getEstado());
-            ps.setString(9, v.getCodigo());
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-
-            return false;
-        }
-    }
-
-    // =========================================================
-    // SQL CANCELAR
-    // =========================================================
-
-    public boolean cancelar(String codigo) {
-
-        String sql =
-                "UPDATE vuelos SET estado='Cancelado' "
-                + "WHERE codigo=?";
-
-        try (
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps =
-                    con.prepareStatement(sql)
-        ) {
-
-            ps.setString(1, codigo);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-
-            return false;
-        }
-    }
-
-    // =========================================================
-    // OBTENER TODOS
-    // =========================================================
-
-    public List<Vuelo> obtenerTodos() {
-
-        List<Vuelo> lista = new ArrayList<>();
-
-        String sql = "SELECT * FROM vuelos";
-
-        try (
-            Connection con = DatabaseConnection.getConnection();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql)
-        ) {
-
-            while (rs.next()) {
-
-                lista.add(new Vuelo(
-                        rs.getString("codigo"),
-                        rs.getString("aerolinea"),
-                        rs.getString("origen"),
-                        rs.getString("destino"),
-                        rs.getString("fecha_salida"),
-                        rs.getString("hora_salida"),
-                        rs.getString("hora_llegada"),
-                        rs.getInt("cupos"),
-                        rs.getString("estado")
-                ));
-            }
-
-        } catch (SQLException e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error al cargar vuelos");
-        }
-
-        return lista;
+        panel.add(campo, gbc);
     }
 }

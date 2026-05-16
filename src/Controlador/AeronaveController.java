@@ -73,7 +73,7 @@ public class AeronaveController {
     }
     
     private boolean tieneVuelosFuturos( int idAero) {
-        String sql
+        String sql//no seria vuelo sino vuelo tripulantes--- verificar
                 = "SELECT COUNT(*) "
                 + "FROM vuelos "
                 + "WHERE id_aeronave = ? "
