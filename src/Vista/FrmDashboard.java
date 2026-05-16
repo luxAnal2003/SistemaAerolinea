@@ -244,7 +244,7 @@ public class FrmDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTripulacionActionPerformed
 
     private void ShowPanel(JPanel p){
-        p.setSize(740, 490);
+        p.setSize(760, 490);
         p.setLocation(160,0);
         
         content.removeAll();
@@ -253,7 +253,7 @@ public class FrmDashboard extends javax.swing.JFrame {
                 new org.netbeans.lib.awtextra.AbsoluteConstraints(
                         0,
                         0,
-                        740,
+                        760, 
                         490
                 )
         );

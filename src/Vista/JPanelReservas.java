@@ -4,27 +4,19 @@
  */
 package Vista;
 
-import Controlador.TripulacionController;
-import Modelo.Tripulacion;
+import Controlador.ReservaController;
+import Modelo.PasajeroExtra;
+import Modelo.Reserva;
 import controlador.LoginController;
 import controlador.VueloController;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Image;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import modelo.Cliente;
 import modelo.Vuelo;
+import java.util.Collections;
 
 /**
  *
@@ -35,6 +27,12 @@ public class JPanelReservas extends javax.swing.JPanel {
     private VueloController vueloController;
     Cliente cliente = LoginController.getClienteActual();
     private boolean cargandoCombos = true;
+    private Vuelo vueloSeleccionado;
+
+    private List<PasajeroExtra> pasajeros = new ArrayList<>();
+    private ReservaController reservaController = new ReservaController();
+    private JPanelAsientos panelAsientos;
+    private int cantidadPasajeros = 1;
 
     /**
      * Creates new form JPanelAeronave
@@ -42,11 +40,31 @@ public class JPanelReservas extends javax.swing.JPanel {
     public JPanelReservas() {
         initComponents();
         vueloController = new VueloController();
-        txtusuario.setText(" " + cliente.getNombres() + cliente.getApellidos());
+        txtusuario.setText(" " + cliente.getNombres() + " " + cliente.getApellidos());
         cargarTarjeta();
         cargarCombos();
         cargarTablaVuelos(vueloController.listarVuelos());
         eventosCombos();
+        buttonGroup1.add(rbtnAñadir);
+        buttonGroup1.add(rbtnNoAñadir);
+
+        rbtnNoAñadir.setSelected(true);
+
+        txtNombresApellidos.setEnabled(false);
+        txtCedula.setEnabled(false);
+        txtFechaNacimiento.setEnabled(false);
+
+        panelAsientos = new JPanelAsientos();
+        jPaneAsientos.setLayout(new BorderLayout());
+        jPaneAsientos.add(panelAsientos, BorderLayout.CENTER);
+
+        txtCupos.setText("(Máx 0)");
+        txtPrecioBase.setText("0.00");
+        txtNumeroPasajeros.setText("1");
+        txtTotalPagar.setText("0.00");
+
+        eventosRadioButtons();
+        eventosTabla();
     }
 
     private void cargarTarjeta() {
@@ -54,50 +72,6 @@ public class JPanelReservas extends javax.swing.JPanel {
         txtCedulaTarjeta.setText(cliente.getCedula());
     }
 
-//    private void cargarCombos() {
-//
-//        cbxOrigen.removeAllItems();
-//        cbxDestino.removeAllItems();
-//        cbxFecha.removeAllItems();
-//
-//        cbxOrigen.addItem("Seleccione");
-//        cbxDestino.addItem("Seleccione");
-//        cbxFecha.addItem("Seleccione");
-//
-//        for (String origen : vueloController.obtenerOrigenes()) {
-//            cbxOrigen.addItem(origen);
-//        }
-//
-//        for (String destino : vueloController.obtenerDestinos()) {
-//            cbxDestino.addItem(destino);
-//        }
-//
-//        for (String fecha : vueloController.obtenerFechas()) {
-//            cbxFecha.addItem(fecha);
-//        }
-//    }
-//    private void cargarCombos() {
-//
-//        cbxOrigen.removeAllItems();
-//        cbxDestino.removeAllItems();
-//        cbxFecha.removeAllItems();
-//
-//        cbxOrigen.addItem("Seleccione");
-//        cbxDestino.addItem("Seleccione");
-//        cbxFecha.addItem("Seleccione");
-//
-//        for (String origen : vueloController.obtenerOrigenes()) {
-//            cbxOrigen.addItem(origen);
-//        }
-//
-//        for (String destino : vueloController.obtenerDestinos()) {
-//            cbxDestino.addItem(destino);
-//        }
-//
-//        for (String fecha : vueloController.obtenerFechas()) {
-//            cbxFecha.addItem(fecha);
-//        }
-//    }
     private void cargarCombos() {
 
         cargandoCombos = true;
@@ -176,88 +150,78 @@ public class JPanelReservas extends javax.swing.JPanel {
         modelo.addColumn("Destino");
         modelo.addColumn("Fecha");
         modelo.addColumn("Precio");
+        modelo.addColumn("Cupos");
 
         for (Vuelo v : lista) {
 
             modelo.addRow(new Object[]{
-                v.getCodigo(),
+                v.getIdVuelo(),
                 v.getOrigen(),
                 v.getDestino(),
                 v.getFechaSalida(),
-                v.getPrecioBase()
+                v.getPrecioBase(),
+                v.getCupos()
             });
         }
 
         tableVuelos.setModel(modelo);
     }
 
-//    private void filtrarVuelos() {
-//
-//        String origen = cbxOrigen.getSelectedItem().toString();
-//        String destino = cbxDestino.getSelectedItem().toString();
-//        String fecha = cbxFecha.getSelectedItem().toString();
-//
-//        // Si aún no selecciona todos los filtros
-//        if (origen.equals("Seleccione")
-//                || destino.equals("Seleccione")
-//                || fecha.equals("Seleccione")) {
-//
-//            cargarTablaVuelos(vueloController.listarVuelos());
-//            return;
-//        }
-//
-//        // Obtener vuelos filtrados
-//        List<Vuelo> listaFiltrada
-//                = vueloController.filtrarVuelos(origen, destino, fecha);
-//
-//        // Validar si no hay resultados
-//        if (listaFiltrada.isEmpty()) {
-//
-//            DefaultTableModel modelo
-//                    = (DefaultTableModel) tableVuelos.getModel();
-//
-//            modelo.setRowCount(0);
-//
-//            JOptionPane.showMessageDialog(
-//                    this,
-//                    "No hay vuelos disponibles con esos filtros"
-//            );
-//
-//        } else {
-//
-//            cargarTablaVuelos(listaFiltrada);
-//        }
-//    }
-//    private void filtrarVuelos() {
-//
-//        String origen = cbxOrigen.getSelectedItem().toString();
-//        String destino = cbxDestino.getSelectedItem().toString();
-//        String fecha = cbxFecha.getSelectedItem().toString();
-//
-//        if (origen.equals("Seleccione")
-//                || destino.equals("Seleccione")
-//                || fecha.equals("Seleccione")) {
-//
-//            cargarTablaVuelos(vueloController.listarVuelos());
-//            return;
-//        }
-//
-//        List<Vuelo> listaFiltrada
-//                = vueloController.filtrarVuelos(origen, destino, fecha);
-//
-//        if (listaFiltrada.isEmpty()) {
-//
-//            ((DefaultTableModel) tableVuelos.getModel()).setRowCount(0);
-//
-//            JOptionPane.showMessageDialog(
-//                    this,
-//                    "No hay vuelos disponibles con esos filtros"
-//            );
-//
-//        } else {
-//            cargarTablaVuelos(listaFiltrada);
-//        }
-//    }
+    private void eventosRadioButtons() {
+
+        rbtnAñadir.addActionListener(e -> {
+
+            txtNombresApellidos.setEnabled(true);
+            txtCedula.setEnabled(true);
+            txtFechaNacimiento.setEnabled(true);
+
+            txtNombresApellidos.setEditable(true);
+            txtCedula.setEditable(true);
+            txtFechaNacimiento.setEditable(true);
+
+            btnAñadirPasajero.setEnabled(true);
+        });
+
+        rbtnNoAñadir.addActionListener(e -> {
+
+            txtNombresApellidos.setEnabled(false);
+            txtCedula.setEnabled(false);
+            txtFechaNacimiento.setEnabled(false);
+
+            txtNombresApellidos.setText("");
+            txtCedula.setText("");
+            txtFechaNacimiento.setText("");
+        });
+    }
+
+    private void eventosTabla() {
+
+        tableVuelos.getSelectionModel().addListSelectionListener(e -> {
+
+            if (!e.getValueIsAdjusting() && tableVuelos.getSelectedRow() != -1) {
+
+                int fila = tableVuelos.getSelectedRow();
+
+                vueloSeleccionado = new Vuelo();
+
+                vueloSeleccionado.setIdVuelo(
+                        Integer.parseInt(
+                                tableVuelos.getValueAt(fila, 0).toString()
+                        )
+                );
+
+                txtPrecioBase.setText(
+                        tableVuelos.getValueAt(fila, 4).toString()
+                );
+
+                txtCupos.setText(
+                        tableVuelos.getValueAt(fila, 5).toString()
+                );
+
+                calcularTotal();
+            }
+        });
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -279,14 +243,14 @@ public class JPanelReservas extends javax.swing.JPanel {
         tableVuelos = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
+        txtCupos = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         txtNombresApellidos = new javax.swing.JTextField();
         txtCedula = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         txtFechaNacimiento = new javax.swing.JTextField();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        rbtnAñadir = new javax.swing.JRadioButton();
+        rbtnNoAñadir = new javax.swing.JRadioButton();
         jLabel15 = new javax.swing.JLabel();
         jPaneAsientos = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
@@ -305,13 +269,13 @@ public class JPanelReservas extends javax.swing.JPanel {
         txtTotalPagar = new javax.swing.JLabel();
         btnComprar = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
-        btnAñadirPasajero = new javax.swing.JButton();
         cbxFecha = new javax.swing.JComboBox<>();
         cbxDestino = new javax.swing.JComboBox<>();
         jLabel20 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         cbxOrigen = new javax.swing.JComboBox<>();
+        btnAñadirPasajero = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(225, 238, 250));
 
@@ -363,10 +327,10 @@ public class JPanelReservas extends javax.swing.JPanel {
         jLabel12.setToolTipText("");
         jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 270, 190, 20));
 
-        jLabel13.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
-        jLabel13.setText("x");
-        jLabel13.setToolTipText("");
-        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, 70, 20));
+        txtCupos.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
+        txtCupos.setText("x");
+        txtCupos.setToolTipText("");
+        jPanel3.add(txtCupos, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, 70, 20));
 
         jLabel14.setFont(new java.awt.Font("Yu Gothic UI", 1, 12)); // NOI18N
         jLabel14.setText("Nombres y Apellidos");
@@ -382,19 +346,19 @@ public class JPanelReservas extends javax.swing.JPanel {
         jPanel3.add(txtCedula, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 140, 230, 30));
 
         jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 1, 12)); // NOI18N
-        jLabel10.setText("Fecha de Nacimiento");
+        jLabel10.setText("Fecha de Nacimiento (yyyy-mm-dd)");
         jLabel10.setToolTipText("");
-        jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 170, 160, -1));
+        jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 170, 210, -1));
 
         txtFechaNacimiento.setEditable(false);
         txtFechaNacimiento.setEnabled(false);
         jPanel3.add(txtFechaNacimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 190, 230, 30));
 
-        jRadioButton2.setText("Añadir (+)");
-        jPanel3.add(jRadioButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, -1, -1));
+        rbtnAñadir.setText("Añadir (+)");
+        jPanel3.add(rbtnAñadir, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, -1, -1));
 
-        jRadioButton3.setText("No añadir (-)");
-        jPanel3.add(jRadioButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 40, -1, -1));
+        rbtnNoAñadir.setText("No añadir (-)");
+        jPanel3.add(rbtnNoAñadir, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 40, -1, -1));
 
         jLabel15.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
         jLabel15.setText("3. Registro de Pasajeros");
@@ -405,14 +369,14 @@ public class JPanelReservas extends javax.swing.JPanel {
         jPaneAsientos.setLayout(jPaneAsientosLayout);
         jPaneAsientosLayout.setHorizontalGroup(
             jPaneAsientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 210, Short.MAX_VALUE)
+            .addGap(0, 320, Short.MAX_VALUE)
         );
         jPaneAsientosLayout.setVerticalGroup(
             jPaneAsientosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 390, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPaneAsientos, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 40, 210, 390));
+        jPanel3.add(jPaneAsientos, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 40, 320, 390));
 
         jLabel17.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
         jLabel17.setText("4. Seleccionar asientos");
@@ -437,13 +401,13 @@ public class JPanelReservas extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtNombreUsuarioTarjeta)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCedulaTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                        .addComponent(txtCedulaTarjeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -536,7 +500,7 @@ public class JPanelReservas extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
                     .addComponent(txtPrecioBase))
@@ -549,7 +513,7 @@ public class JPanelReservas extends javax.swing.JPanel {
                     .addComponent(jLabel23)
                     .addComponent(txtTotalPagar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnComprar, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                .addComponent(btnComprar, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -559,19 +523,6 @@ public class JPanelReservas extends javax.swing.JPanel {
         jLabel18.setText("Cédula");
         jLabel18.setToolTipText("");
         jPanel3.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 120, 160, -1));
-
-        btnAñadirPasajero.setBackground(new java.awt.Color(204, 204, 204));
-        btnAñadirPasajero.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnAñadirPasajero.setForeground(new java.awt.Color(255, 255, 255));
-        btnAñadirPasajero.setText("Añadir Pasajero ");
-        btnAñadirPasajero.setBorder(null);
-        btnAñadirPasajero.setEnabled(false);
-        btnAñadirPasajero.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAñadirPasajeroActionPerformed(evt);
-            }
-        });
-        jPanel3.add(btnAñadirPasajero, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 230, 160, 30));
 
         cbxFecha.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(cbxFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 150, 70, -1));
@@ -597,27 +548,33 @@ public class JPanelReservas extends javax.swing.JPanel {
         cbxOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(cbxOrigen, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 70, -1));
 
+        btnAñadirPasajero.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnAñadirPasajero.setForeground(new java.awt.Color(0, 102, 204));
+        btnAñadirPasajero.setText("Añadir pasajero");
+        btnAñadirPasajero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAñadirPasajeroActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnAñadirPasajero, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 230, 130, 30));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txtusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addGap(46, 46, 46))
+                .addGap(25, 25, 25))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 760, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jSeparator2)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -631,32 +588,230 @@ public class JPanelReservas extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
                             .addComponent(txtusuario))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 42, Short.MAX_VALUE)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(445, 445, 445)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
+        try {
+            if (vueloSeleccionado == null) {
 
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Seleccione un vuelo"
+                );
+                return;
+            }
+
+            List<String> asientos = panelAsientos.getAsientosSeleccionados();
+            if (asientos.size() != cantidadPasajeros) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Debe seleccionar exactamente "
+                        + cantidadPasajeros
+                        + " asientos"
+                );
+                return;
+            }
+
+            List<String> personas = new ArrayList<>();
+
+            personas.add(cliente.getNombres() + " " + cliente.getApellidos());
+
+            for (PasajeroExtra p : pasajeros) {
+                personas.add(p.getNombre());
+            }
+
+            Collections.shuffle(asientos);
+
+            StringBuilder detalle = new StringBuilder();
+            detalle.append("ASIENTOS ASIGNADOS\n\n");
+
+            for (int i = 0; i < personas.size(); i++) {
+
+                String persona = personas.get(i);
+                String asiento = asientos.get(i);
+
+                detalle.append(persona)
+                        .append(" -> Asiento ")
+                        .append(asiento)
+                        .append("\n");
+            }
+
+            double precio = Double.parseDouble(
+                    txtPrecioBase.getText()
+            );
+
+            double total = precio * cantidadPasajeros;
+
+            Reserva r = new Reserva();
+
+            r.setIdCliente(cliente.getId());
+
+            r.setIdVuelo(
+                    vueloSeleccionado.getIdVuelo()
+            );
+
+            r.setCantidadPasajeros(cantidadPasajeros);
+
+            r.setTotal(total);
+
+            int idReserva = reservaController.crearReserva(r);
+
+            if (idReserva > 0) {
+
+                // Asignar asiento al titular
+                String asientoTitular = asientos.get(0);
+
+                reservaController.actualizarAsientoTitular(
+                        idReserva,
+                        asientoTitular
+                );
+
+                // Asignar asientos pasajeros extras
+                for (int i = 0; i < pasajeros.size(); i++) {
+
+                    PasajeroExtra p = pasajeros.get(i);
+
+                    // empieza en 1 porque 0 es el titular
+                    String asiento = asientos.get(i + 1);
+
+                    reservaController.actualizarAsientoPasajero(
+                            p.getIdentificacion(),
+                            asiento
+                    );
+                }
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Reserva creada correctamente\n"
+                        + "Total pagado: $" + total
+                        + "\n\n"
+                        + detalle.toString()
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No se pudo crear la reserva"
+                );
+            }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al generar reserva"
+            );
+        }
     }//GEN-LAST:event_btnComprarActionPerformed
 
     private void btnAñadirPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAñadirPasajeroActionPerformed
-        // TODO add your handling code here:
+        if (vueloSeleccionado == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccione un vuelo"
+            );
+            return;
+        }
+
+        String nombres = txtNombresApellidos.getText().trim();
+        String cedula = txtCedula.getText().trim();
+        String fechaNacimiento = txtFechaNacimiento.getText().trim();
+
+        if (nombres.isEmpty()
+                || cedula.isEmpty()
+                || fechaNacimiento.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Complete todos los campos"
+            );
+            return;
+        }
+        if (!cedula.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "La cédula debe contener exactamente 10 números"
+            );
+            return;
+        }
+
+        if (!fechaNacimiento.matches("\\d{4}-\\d{2}-\\d{2}")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "La fecha debe tener formato YYYY-MM-DD\nEjemplo: 2000-05-14"
+            );
+            return;
+        }
+        PasajeroExtra p = new PasajeroExtra();
+
+        p.setNombre(nombres);
+        p.setIdentificacion(cedula);
+        p.setFechaNacimiento(fechaNacimiento);
+
+        boolean registrado = reservaController.guardarPasajero(
+                p,
+                cliente.getId(),
+                vueloSeleccionado.getIdVuelo()
+        );
+
+        if (registrado) {
+            pasajeros.add(p);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Pasajero añadido correctamente"
+            );
+
+            cantidadPasajeros = pasajeros.size() + 1;
+
+            txtNumeroPasajeros.setText(
+                    String.valueOf(cantidadPasajeros)
+            );
+
+            calcularTotal();
+
+            setear();
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al registrar pasajero"
+            );
+        }
     }//GEN-LAST:event_btnAñadirPasajeroActionPerformed
 
     private void setear() {
-//        txtNombresApellidos.setText("");
-//        txtApellidos.setText("");
-//        txtCedula.setText("");
-//        txtLicencia.setText("");
-//        cbxRol.setSelectedIndex(0);
+        txtNombresApellidos.setText("");
+        txtFechaNacimiento.setText("");
+        txtCedula.setText("");
     }
 
+    private void calcularTotal() {
+
+        try {
+
+            double precio = Double.parseDouble(
+                    txtPrecioBase.getText()
+            );
+
+            double total = precio * cantidadPasajeros;
+
+            txtTotalPagar.setText(
+                    String.format("%.2f", total)
+            );
+
+        } catch (Exception e) {
+
+            txtTotalPagar.setText("0.00");
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAñadirPasajero;
@@ -670,7 +825,6 @@ public class JPanelReservas extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -689,13 +843,14 @@ public class JPanelReservas extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JRadioButton rbtnAñadir;
+    private javax.swing.JRadioButton rbtnNoAñadir;
     private javax.swing.JTable tableVuelos;
     private javax.swing.JTextField txtCedula;
     private javax.swing.JLabel txtCedulaTarjeta;
+    private javax.swing.JLabel txtCupos;
     private javax.swing.JTextField txtFechaNacimiento;
     private javax.swing.JLabel txtNombreUsuarioTarjeta;
     private javax.swing.JTextField txtNombresApellidos;

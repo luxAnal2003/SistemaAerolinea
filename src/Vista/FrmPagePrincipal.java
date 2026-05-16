@@ -102,17 +102,17 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Yu Gothic UI", 0, 10)); // NOI18N
         jLabel4.setText("AIRWAYS");
         jLabel4.setToolTipText("");
-        content.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 240, 70, 10));
+        content.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 250, 70, 10));
 
         jLabel8.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
         jLabel8.setText("SKYLINE");
         jLabel8.setToolTipText("");
-        content.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 220, 80, -1));
+        content.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 230, 80, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
-        content.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 220, 40, 40));
+        content.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 230, 40, 40));
 
-        getContentPane().add(content, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 740, 490));
+        getContentPane().add(content, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 870, 490));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -141,7 +141,7 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void ShowPanel(JPanel p){
-        p.setSize(740, 490);
+        p.setSize(857, 492);
         p.setLocation(160,0);
         
         content.removeAll();
@@ -150,8 +150,8 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
                 new org.netbeans.lib.awtextra.AbsoluteConstraints(
                         0,
                         0,
-                        740,
-                        490
+                        857,
+                        492
                 )
         );
         content.revalidate();

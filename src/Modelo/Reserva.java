@@ -10,43 +10,19 @@ package Modelo;
  */
 
 public class Reserva {
-
-    private String idReserva;
     private int idCliente;
-    private String codigoVuelo;
+    private int idVuelo;
     private int cantidadPasajeros;
-    private double precioTotal;
-    private String fechaReserva;
-    private String estado;
+    private double total;
 
     public Reserva() {
     }
 
-    public Reserva(
-            String idReserva,
-            int idCliente,
-            String codigoVuelo,
-            int cantidadPasajeros,
-            double precioTotal,
-            String fechaReserva,
-            String estado
-    ) {
-
-        this.idReserva = idReserva;
+    public Reserva(int idCliente, int idVuelo, int cantidadPasajeros, double total) {
         this.idCliente = idCliente;
-        this.codigoVuelo = codigoVuelo;
+        this.idVuelo = idVuelo;
         this.cantidadPasajeros = cantidadPasajeros;
-        this.precioTotal = precioTotal;
-        this.fechaReserva = fechaReserva;
-        this.estado = estado;
-    }
-
-    public String getIdReserva() {
-        return idReserva;
-    }
-
-    public void setIdReserva(String idReserva) {
-        this.idReserva = idReserva;
+        this.total = total;
     }
 
     public int getIdCliente() {
@@ -57,12 +33,12 @@ public class Reserva {
         this.idCliente = idCliente;
     }
 
-    public String getCodigoVuelo() {
-        return codigoVuelo;
+    public int getIdVuelo() {
+        return idVuelo;
     }
 
-    public void setCodigoVuelo(String codigoVuelo) {
-        this.codigoVuelo = codigoVuelo;
+    public void setIdVuelo(int idVuelo) {
+        this.idVuelo = idVuelo;
     }
 
     public int getCantidadPasajeros() {
@@ -73,27 +49,13 @@ public class Reserva {
         this.cantidadPasajeros = cantidadPasajeros;
     }
 
-    public double getPrecioTotal() {
-        return precioTotal;
+    public double getTotal() {
+        return total;
     }
 
-    public void setPrecioTotal(double precioTotal) {
-        this.precioTotal = precioTotal;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
-    public String getFechaReserva() {
-        return fechaReserva;
-    }
 
-    public void setFechaReserva(String fechaReserva) {
-        this.fechaReserva = fechaReserva;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
 }

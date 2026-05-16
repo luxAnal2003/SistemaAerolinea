@@ -4,6 +4,7 @@
  */
 package Controlador;
 
+import Modelo.PasajeroExtra;
 import Modelo.Reserva;
 import utils.DatabaseConnection;
 
@@ -13,137 +14,119 @@ import java.util.Date;
 
 public class ReservaController {
 
-    private String mensaje;
+    private Connection con;
 
-    public String getMensaje() {
-        return mensaje;
+    public ReservaController() {
+        con = DatabaseConnection.getConnection();
     }
 
-    public String generarIdReserva() {
+    public int crearReserva(Reserva r) throws SQLException {
 
-        String sql = "SELECT COUNT(*) FROM reservas";
+        String sql = "INSERT INTO reservas(id_cliente, id_vuelos, cantidad_pasajeros, precio_total, fecha_reserva, estado) VALUES (?, ?, ?, ?, CURDATE(), 'Confirmada')";
 
-        try (
-                Connection con = DatabaseConnection.getConnection();
-                Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(sql)) {
+        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            if (rs.next()) {
+        ps.setInt(1, r.getIdCliente());
+        ps.setInt(2, r.getIdVuelo());
+        ps.setInt(3, r.getCantidadPasajeros());
+        ps.setDouble(4, r.getTotal());
 
-                int num = rs.getInt(1) + 1001;
+        ps.executeUpdate();
 
-                return "RES-" + num;
-            }
-
-        } catch (SQLException e) {
-
-            System.out.println(e.getMessage());
+        ResultSet rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            return rs.getInt(1);
         }
 
-        return "RES-1001";
+        return -1;
     }
 
-    public boolean crearReserva(Reserva r) {
+    public boolean guardarPasajero(
+            PasajeroExtra p,
+            int idCliente,
+            int idVuelo
+    ) {
 
-        try (
-                Connection con = DatabaseConnection.getConnection()) {
+        try {
 
-            String sqlVuelo
-                    = "SELECT cupos, precio_base "
-                    + "FROM vuelos "
-                    + "WHERE codigo=? "
-                    + "AND estado='Activo'";
+            String sql = "INSERT INTO pasajeros_extra "
+                    + "(id_cliente, id_vuelo, nombre, identificacion, fecha_nacimiento) "
+                    + "VALUES (?, ?, ?, ?, ?)";
 
-            PreparedStatement psVuelo
-                    = con.prepareStatement(sqlVuelo);
+            PreparedStatement ps = con.prepareStatement(sql);
 
-            psVuelo.setString(1, r.getCodigoVuelo());
+            ps.setInt(1, idCliente);
+            ps.setInt(2, idVuelo);
+            ps.setString(3, p.getNombre());
+            ps.setString(4, p.getIdentificacion());
 
-            ResultSet rs = psVuelo.executeQuery();
-
-            if (!rs.next()) {
-
-                mensaje = "Vuelo no disponible";
-
-                return false;
-            }
-
-            int cupos = rs.getInt("cupos");
-
-            double precioBase
-                    = rs.getDouble("precio_base");
-
-            if (cupos <= 0) {
-
-                mensaje = "No hay cupos disponibles";
-
-                return false;
-            }
-
-            if (r.getCantidadPasajeros() > cupos) {
-
-                mensaje = "Cantidad supera cupos";
-
-                return false;
-            }
-
-            double total
-                    = precioBase
-                    * r.getCantidadPasajeros();
-
-            r.setPrecioTotal(total);
-
-            String fecha = new SimpleDateFormat(
-                    "yyyy-MM-dd"
-            ).format(new Date());
-
-            r.setFechaReserva(fecha);
-
-            r.setEstado("Reservado");
-
-            String sql
-                    = "INSERT INTO reservas "
-                    + "VALUES(?,?,?,?,?,?,?)";
-
-            PreparedStatement ps
-                    = con.prepareStatement(sql);
-
-            ps.setString(1, r.getIdReserva());
-            ps.setInt(2, r.getIdCliente());
-            ps.setString(3, r.getCodigoVuelo());
-            ps.setInt(4, r.getCantidadPasajeros());
-            ps.setDouble(5, r.getPrecioTotal());
-            ps.setString(6, r.getFechaReserva());
-            ps.setString(7, r.getEstado());
+            // FORMATO YYYY-MM-DD
+            ps.setDate(
+                    5,
+                    java.sql.Date.valueOf(p.getFechaNacimiento())
+            );
 
             int filas = ps.executeUpdate();
 
-            String update
-                    = "UPDATE vuelos "
-                    + "SET cupos = cupos - ? "
-                    + "WHERE codigo=?";
+            return filas > 0;
 
-            PreparedStatement psUpdate
-                    = con.prepareStatement(update);
+        } catch (Exception e) {
 
-            psUpdate.setInt(
-                    1,
-                    r.getCantidadPasajeros());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-            psUpdate.setString(
-                    2,
-                    r.getCodigoVuelo());
+    public boolean actualizarAsientoTitular(
+            int idReserva,
+            String asiento
+    ) {
 
-            psUpdate.executeUpdate();
+        try {
 
-            mensaje = "Reserva creada";
+            String sql = "UPDATE reservas "
+                    + "SET asiento = ? "
+                    + "WHERE id_reserva = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, asiento);
+            ps.setInt(2, idReserva);
+
+            int filas = ps.executeUpdate();
 
             return filas > 0;
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
 
-            mensaje = e.getMessage();
+            e.printStackTrace();
+            return false;
+        }
+    }
 
+    public boolean actualizarAsientoPasajero(
+            String identificacion,
+            String asiento
+    ) {
+
+        try {
+
+            String sql = "UPDATE pasajeros_extra "
+                    + "SET asiento = ? "
+                    + "WHERE identificacion = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, asiento);
+            ps.setString(2, identificacion);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
             return false;
         }
     }

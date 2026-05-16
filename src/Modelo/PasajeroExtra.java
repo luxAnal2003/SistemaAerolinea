@@ -9,10 +9,41 @@ package Modelo;
  * @author admin
  */
 public class PasajeroExtra {
+    private int id;
+    private int idReserva;
     private String nombre;
     private String identificacion;
     private String fechaNacimiento;
     private String asiento;
+
+    
+    public PasajeroExtra() {}
+    
+    public PasajeroExtra(int id, int idReserva, String nombre, String identificacion, String fechaNacimiento, String asiento) {
+        this.id = id;
+        this.idReserva = idReserva;
+        this.nombre = nombre;
+        this.identificacion = identificacion;
+        this.fechaNacimiento = fechaNacimiento;
+        this.asiento = asiento;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdReserva() {
+        return idReserva;
+    }
+
+    public void setIdReserva(int idReserva) {
+        this.idReserva = idReserva;
+    }
 
     public String getNombre() {
         return nombre;
