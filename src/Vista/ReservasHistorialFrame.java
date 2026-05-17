@@ -16,6 +16,7 @@ public class ReservasHistorialFrame extends JFrame {
     private Cliente cliente;
     private JTable tablaReservas;
     private DefaultTableModel modeloTabla;
+    Cliente clienteControll = LoginController.getClienteActual();
 
     public ReservasHistorialFrame() {
         this.cliente = LoginController.getClienteActual();
@@ -114,7 +115,11 @@ public class ReservasHistorialFrame extends JFrame {
 
         ReservaController rc = new ReservaController();
 
-        List<Reserva> lista = rc.listarReservas();
+        Cliente cliente = LoginController.getClienteActual();
+
+        List<Reserva> lista = rc.listarReservas(
+                cliente.getId()
+        );
 
         for (Reserva r : lista) {
 

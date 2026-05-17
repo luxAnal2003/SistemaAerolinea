@@ -133,7 +133,7 @@ public class ReservaController {
         }
     }
 
-    public List<Reserva> listarReservas() {
+    public List<Reserva> listarReservas(int idCliente) {
 
         List<Reserva> lista = new ArrayList<>();
 
@@ -149,9 +149,12 @@ public class ReservaController {
                     + "r.asiento "
                     + "FROM reservas r "
                     + "INNER JOIN vuelos v "
-                    + "ON r.id_vuelos = v.id_vuelo";
+                    + "ON r.id_vuelos = v.id_vuelo "
+                    + "WHERE r.id_cliente = ?";
 
             PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, idCliente);
 
             ResultSet rs = ps.executeQuery();
 
