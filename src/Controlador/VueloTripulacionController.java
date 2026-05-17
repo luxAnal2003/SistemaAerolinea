@@ -26,7 +26,7 @@ public class VueloTripulacionController {
 ) {
 
     String sql = "INSERT INTO vuelo_tripulacion "
-            + "(codigo_vuelo, id_tripulante) "
+            + "(id_vuelo, id_tripulante) "
             + "VALUES (?, ?)";
 
     try (
@@ -34,17 +34,17 @@ public class VueloTripulacionController {
             PreparedStatement ps = con.prepareStatement(sql)
     ) {
 
-        ps.setString(1, vuelo.getCodigo());
+        ps.setInt(1, vuelo.getIdVuelo());
         ps.setInt(2, piloto.getIdTripulante());
         ps.executeUpdate();
 
-        ps.setString(1, vuelo.getCodigo());
+        ps.setInt(1, vuelo.getIdVuelo());
         ps.setInt(2, copiloto.getIdTripulante());
         ps.executeUpdate();
 
         for (Tripulacion t : asistentes) {
 
-            ps.setString(1, vuelo.getCodigo());
+            ps.setInt(1, vuelo.getIdVuelo());
             ps.setInt(2, t.getIdTripulante());
 
             ps.executeUpdate();
