@@ -299,6 +299,7 @@ public class JPanelEditarAeronave extends javax.swing.JPanel {
                 fila[0] = aero.getIdAeronave();
                 fila[1] = aero.getModelo();
                 fila[2] = aero.getCapacidad();
+                fila[3] = aero.getEstado();
                 model.addRow(fila);
             }
             tableAeronave.setModel(model);
