@@ -6,14 +6,11 @@ package vista;
 import Modelo.Aeronave;
 import controlador.VueloController;
 import modelo.Vuelo;
-import utils.DatabaseConnection;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GestionVuelosFrame extends JFrame {
@@ -67,9 +64,6 @@ public class GestionVuelosFrame extends JFrame {
 
         mainPanel.setBackground(new Color(240, 240, 240));
 
-        // =========================================
-        // PANEL FORMULARIO
-        // =========================================
         JPanel panelForm = new JPanel(new GridBagLayout());
 
         panelForm.setPreferredSize(new Dimension(340, 0));
@@ -134,9 +128,6 @@ public class GestionVuelosFrame extends JFrame {
 
         panelForm.add(cbAeronave, gbc);
 
-        // =========================================
-        // ESTADO
-        // =========================================
         gbc.gridx = 0;
         gbc.gridy = 10;
 
@@ -150,9 +141,6 @@ public class GestionVuelosFrame extends JFrame {
 
         panelForm.add(cbEstado, gbc);
 
-        // =========================================
-        // BOTONES
-        // =========================================
         JPanel panelBotones = new JPanel(new GridLayout(3, 2, 10, 10));
 
         panelBotones.setBackground(Color.WHITE);
@@ -194,9 +182,6 @@ public class GestionVuelosFrame extends JFrame {
 
         panelForm.add(panelBotones, gbc);
 
-        // =========================================
-        // PANEL DERECHO
-        // =========================================
         JPanel panelDerecho = new JPanel(new BorderLayout(10, 10));
 
         panelDerecho.setBackground(Color.WHITE);
@@ -229,9 +214,6 @@ public class GestionVuelosFrame extends JFrame {
         panelBusqueda.add(btnBuscar);
         panelBusqueda.add(btnMostrarTodos);
 
-        // =========================================
-        // TABLA
-        // =========================================
         modeloTabla = new DefaultTableModel(
                 new Object[]{
                     "Código",
@@ -291,9 +273,6 @@ public class GestionVuelosFrame extends JFrame {
 
         add(mainPanel);
 
-        // =========================================
-        // EVENTOS
-        // =========================================
         btnRegistrar.addActionListener(e -> registrarVuelo());
 
         btnActualizar.addActionListener(e -> actualizarVuelo());
@@ -326,9 +305,6 @@ public class GestionVuelosFrame extends JFrame {
                 });
     }
 
-    // =========================================
-    // CARGAR AERONAVES
-    // =========================================
     private void cargarAeronaves() {
         listaAeronaves = vueloController.listarAeronaves();
         cbAeronave.removeAllItems();
@@ -337,9 +313,6 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================
-    // REGISTRAR
-    // =========================================
     private void registrarVuelo() {
 
         try {
@@ -386,9 +359,6 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================
-    // ACTUALIZAR
-    // =========================================
     private void actualizarVuelo() {
 
         try {
@@ -435,9 +405,6 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================
-    // CANCELAR
-    // =========================================
     private void cancelarVuelo() {
 
         String codigo = txtCodigo.getText();
@@ -452,9 +419,6 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================
-    // BUSCAR
-    // =========================================
     private void buscarVuelo() {
 
         modeloTabla.setRowCount(0);
@@ -481,9 +445,6 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================
-    // TABLA
-    // =========================================
     private void cargarDatosEnTabla() {
 
         modeloTabla.setRowCount(0);
@@ -508,9 +469,6 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================
-    // LLENAR CAMPOS
-    // =========================================
     private void llenarCampos(int fila) {
 
         txtCodigo.setText(
@@ -539,7 +497,7 @@ public class GestionVuelosFrame extends JFrame {
 
         cbEstado.setSelectedItem(
                 modeloTabla.getValueAt(fila, 8).toString());
-        
+
         txtPrecioBase.setText(
                 modeloTabla.getValueAt(fila, 9).toString());
 
@@ -558,9 +516,6 @@ public class GestionVuelosFrame extends JFrame {
         }
     }
 
-    // =========================================
-    // LIMPIAR
-    // =========================================
     private void limpiarCampos() {
 
         txtCodigo.setText("");
@@ -577,9 +532,6 @@ public class GestionVuelosFrame extends JFrame {
         cbAeronave.setSelectedIndex(0);
     }
 
-    // =========================================
-    // BOTONES
-    // =========================================
     private JButton crearBoton(String texto, Color color) {
 
         JButton btn = new JButton(texto);
@@ -601,17 +553,7 @@ public class GestionVuelosFrame extends JFrame {
         return btn;
     }
 
-    // =========================================
-    // CAMPOS
-    // =========================================
-    private void agregarCampo(
-            JPanel panel,
-            String texto,
-            JTextField campo,
-            GridBagConstraints gbc,
-            int y
-    ) {
-
+    private void agregarCampo(JPanel panel,String texto,JTextField campo,GridBagConstraints gbc,int y) {
         gbc.gridx = 0;
         gbc.gridy = y;
 

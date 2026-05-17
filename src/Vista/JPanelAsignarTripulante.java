@@ -641,38 +641,38 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
 
             return;
         }
-boolean guardado
-        = asignacionController.guardarAsignacion(
-                vuelo,
-                piloto,
-                copiloto,
-                asistentesSeleccionados
-        );
+        boolean guardado
+                = asignacionController.guardarAsignacion(
+                        vuelo,
+                        piloto,
+                        copiloto,
+                        asistentesSeleccionados
+                );
 
-if (guardado) {
+        if (guardado) {
 
-    String resumen
-            = asignacionController.generarResumen(
-                    vuelo,
-                    aeronave,
-                    piloto,
-                    copiloto,
-                    asistentesSeleccionados
+            String resumen
+                    = asignacionController.generarResumen(
+                            vuelo,
+                            aeronave,
+                            piloto,
+                            copiloto,
+                            asistentesSeleccionados
+                    );
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    resumen
+                    + "\n\nAsignación guardada correctamente."
             );
 
-    JOptionPane.showMessageDialog(
-            this,
-            resumen
-                    + "\n\nAsignación guardada correctamente."
-    );
+        } else {
 
-} else {
-
-    JOptionPane.showMessageDialog(
-            this,
-            "Error al guardar asignación"
-    );
-}
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al guardar asignación"
+            );
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

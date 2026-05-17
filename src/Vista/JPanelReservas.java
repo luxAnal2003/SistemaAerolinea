@@ -664,7 +664,6 @@ public class JPanelReservas extends javax.swing.JPanel {
 
             if (idReserva > 0) {
 
-                // Asignar asiento al titular
                 String asientoTitular = asientos.get(0);
 
                 reservaController.actualizarAsientoTitular(
@@ -672,12 +671,10 @@ public class JPanelReservas extends javax.swing.JPanel {
                         asientoTitular
                 );
 
-                // Asignar asientos pasajeros extras
                 for (int i = 0; i < pasajeros.size(); i++) {
 
                     PasajeroExtra p = pasajeros.get(i);
 
-                    // empieza en 1 porque 0 es el titular
                     String asiento = asientos.get(i + 1);
 
                     reservaController.actualizarAsientoPasajero(

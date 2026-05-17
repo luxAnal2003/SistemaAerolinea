@@ -8,7 +8,6 @@ import Modelo.Aeronave;
 import Modelo.Tripulacion;
 import utils.DatabaseConnection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import modelo.Vuelo;
@@ -35,23 +34,14 @@ public class VueloTripulacionController {
             PreparedStatement ps = con.prepareStatement(sql)
     ) {
 
-        // =========================
-        // PILOTO
-        // =========================
         ps.setString(1, vuelo.getCodigo());
         ps.setInt(2, piloto.getIdTripulante());
         ps.executeUpdate();
 
-        // =========================
-        // COPILOTO
-        // =========================
         ps.setString(1, vuelo.getCodigo());
         ps.setInt(2, copiloto.getIdTripulante());
         ps.executeUpdate();
 
-        // =========================
-        // ASISTENTES
-        // =========================
         for (Tripulacion t : asistentes) {
 
             ps.setString(1, vuelo.getCodigo());

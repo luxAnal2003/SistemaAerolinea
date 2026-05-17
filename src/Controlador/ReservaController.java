@@ -8,9 +8,11 @@ import Modelo.PasajeroExtra;
 import Modelo.Reserva;
 import utils.DatabaseConnection;
 
+import Modelo.Reserva;
+import java.util.ArrayList;
+import java.util.List;
+
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ReservaController {
 
@@ -129,5 +131,70 @@ public class ReservaController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<Reserva> listarReservas() {
+
+        List<Reserva> lista = new ArrayList<>();
+
+        try {
+
+            String sql = "SELECT r.id_reserva, "
+                    + "v.origen, "
+                    + "v.destino, "
+                    + "r.fecha_reserva, "
+                    + "r.cantidad_pasajeros, "
+                    + "r.precio_total, "
+                    + "r.estado, "
+                    + "r.asiento "
+                    + "FROM reservas r "
+                    + "INNER JOIN vuelos v "
+                    + "ON r.id_vuelos = v.id_vuelo";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Reserva r = new Reserva();
+
+                r.setIdReserva(rs.getInt("id_reserva"));
+
+                r.setRuta(
+                        rs.getString("origen")
+                        + " - "
+                        + rs.getString("destino")
+                );
+
+                r.setFechaReserva(
+                        rs.getDate("fecha_reserva").toString()
+                );
+
+                r.setCantidadPasajeros(
+                        rs.getInt("cantidad_pasajeros")
+                );
+
+                r.setTotal(
+                        rs.getDouble("precio_total")
+                );
+
+                r.setEstado(
+                        rs.getString("estado")
+                );
+
+                r.setAsiento(
+                        rs.getString("asiento")
+                );
+
+                lista.add(r);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return lista;
     }
 }

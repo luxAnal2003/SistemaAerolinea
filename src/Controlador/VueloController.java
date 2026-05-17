@@ -16,62 +16,6 @@ public class VueloController {
         return mensaje;
     }
 
-    // =========================================================
-    // REGISTRAR
-    // =========================================================
-//    public boolean registrar(Vuelo v) {
-//
-//        // VALIDAR AERONAVE
-//        if (!aeronaveDisponible(v.getIdAeronave())) {
-//
-//            mensaje = "La aeronave seleccionada no está activa.";
-//
-//            return false;
-//        }
-//
-//        // VALIDAR CÓDIGO DUPLICADO
-//        if (codigoExiste(v.getCodigo())) {
-//
-//            mensaje = "Ya existe un vuelo con ese código.";
-//
-//            return false;
-//        }
-//
-//        String sql = "INSERT INTO vuelos "
-//                + "(codigo, aerolinea, origen, destino, fecha_salida, "
-//                + "hora_salida, hora_llegada, cupos, estado, precio_base, id_aeronave) "
-//                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//
-//        try (
-//                Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-//
-//            ps.setString(1, v.getCodigo());
-//            ps.setString(2, v.getAerolinea());
-//            ps.setString(3, v.getOrigen());
-//            ps.setString(4, v.getDestino());
-//            ps.setString(5, v.getFechaSalida());
-//            ps.setString(6, v.getHoraSalida());
-//            ps.setString(7, v.getHoraLlegada());
-//            ps.setInt(8, v.getCupos());
-//            ps.setString(9, v.getEstado());
-//            ps.setDouble(10, v.getPrecioBase());
-//            ps.setInt(11, v.getIdAeronave());
-//
-//            boolean resultado = ps.executeUpdate() > 0;
-//
-//            if (resultado) {
-//                mensaje = "Vuelo registrado correctamente.";
-//            }
-//
-//            return resultado;
-//
-//        } catch (SQLException e) {
-//
-//            mensaje = "Error al registrar vuelo: " + e.getMessage();
-//
-//            return false;
-//        }
-//    }
     public boolean registrar(Vuelo v) {
 
         if (!aeronaveDisponible(v.getIdAeronave())) {
@@ -132,9 +76,6 @@ public class VueloController {
         return false;
     }
 
-    // =========================================================
-    // ACTUALIZAR
-    // =========================================================
     public boolean actualizar(Vuelo v) {
 
         if (!aeronaveDisponible(v.getIdAeronave())) {
@@ -188,9 +129,6 @@ public class VueloController {
         }
     }
 
-    // =========================================================
-    // CANCELAR
-    // =========================================================
     public boolean cancelar(String codigo) {
 
         String sql
@@ -213,9 +151,6 @@ public class VueloController {
         }
     }
 
-    // =========================================================
-    // LISTAR
-    // =========================================================
     public List<Vuelo> listarVuelos() {
 
         List<Vuelo> lista = new ArrayList<>();
@@ -275,53 +210,6 @@ public class VueloController {
         return lista;
     }
 
-    // =========================================================
-    // BUSCAR
-    // =========================================================
-//    public List<Vuelo> buscarVuelo(String texto) {
-//
-//        List<Vuelo> lista = new ArrayList<>();
-//
-//        String sql
-//                = "SELECT * FROM vuelos "
-//                + "WHERE codigo LIKE ? "
-//                + "OR aerolinea LIKE ?";
-//
-//        try (
-//                Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-//
-//            ps.setString(1, "%" + texto + "%");
-//            ps.setString(2, "%" + texto + "%");
-//
-//            ResultSet rs = ps.executeQuery();
-//
-//            while (rs.next()) {
-//
-//                Vuelo v = new Vuelo(
-//                        rs.getString("codigo"),
-//                        rs.getString("aerolinea"),
-//                        rs.getString("origen"),
-//                        rs.getString("destino"),
-//                        rs.getString("fecha_salida"),
-//                        rs.getString("hora_salida"),
-//                        rs.getString("hora_llegada"),
-//                        rs.getInt("cupos"),
-//                        rs.getString("estado"),
-//                        rs.getDouble("precio_base"),
-//                        rs.getInt("id_aeronave"),
-//                        rs.getInt("id_vuelo") // ✅ FALTABA ESTO
-//                );
-//
-//                lista.add(v);
-//            }
-//
-//        } catch (SQLException e) {
-//
-//            System.out.println("Error búsqueda: " + e.getMessage());
-//        }
-//
-//        return lista;
-//    }
     public List<Vuelo> buscarVuelo(String texto) {
 
         List<Vuelo> lista = new ArrayList<>();
@@ -546,62 +434,4 @@ public class VueloController {
 
         return lista;
     }
-//
-//    public List<Vuelo> filtrarVuelosFlex(String origen, String destino, String fecha) {
-//
-//        List<Vuelo> lista = new ArrayList<>();
-//
-//        String sql = "SELECT * FROM vuelos WHERE 1=1";
-//
-//        List<Object> params = new ArrayList<>();
-//
-//        if (!origen.equals("Seleccione")) {
-//            sql += " AND origen = ?";
-//            params.add(origen);
-//        }
-//
-//        if (!destino.equals("Seleccione")) {
-//            sql += " AND destino = ?";
-//            params.add(destino);
-//        }
-//
-//        if (!fecha.equals("Seleccione")) {
-//            sql += " AND fecha_salida = ?";
-//            params.add(fecha);
-//        }
-//
-//        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-//
-//            for (int i = 0; i < params.size(); i++) {
-//                ps.setObject(i + 1, params.get(i));
-//            }
-//
-//            ResultSet rs = ps.executeQuery();
-//
-//            while (rs.next()) {
-//
-//                Vuelo v = new Vuelo(
-//                        rs.getString("codigo"),
-//                        rs.getString("aerolinea"),
-//                        rs.getString("origen"),
-//                        rs.getString("destino"),
-//                        rs.getString("fecha_salida"),
-//                        rs.getString("hora_salida"),
-//                        rs.getString("hora_llegada"),
-//                        rs.getInt("cupos"),
-//                        rs.getString("estado"),
-//                        rs.getDouble("precio_base"),
-//                        rs.getInt("id_aeronave"),
-//                        rs.getInt("id_vuelo") // ✅ FALTABA ESTO
-//                );
-//
-//                lista.add(v);
-//            }
-//
-//        } catch (Exception e) {
-//            System.out.println("Error filtro vuelos: " + e.getMessage());
-//        }
-//
-//        return lista;
-//    }
 }

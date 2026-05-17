@@ -17,7 +17,6 @@ public class Vuelo {
     public Vuelo() {
     }
 
-    // Constructor COMPLETO (con ID)
     public Vuelo(String codigo, String aerolinea, String origen, String destino,
                  String fechaSalida, String horaSalida, String horaLlegada,
                  int cupos, String estado, double precioBase,
@@ -37,7 +36,6 @@ public class Vuelo {
         this.idVuelo = idVuelo;
     }
 
-    // Constructor SIN ID (para INSERT)
     public Vuelo(String codigo, String aerolinea, String origen, String destino,
                  String fechaSalida, String horaSalida, String horaLlegada,
                  int cupos, String estado, double precioBase,
@@ -56,7 +54,6 @@ public class Vuelo {
         this.idAeronave = idAeronave;
     }
 
-    // GETTERS Y SETTERS
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }
 
