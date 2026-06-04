@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import Controlador.AeronaveController;
+import Controlador.CDUVAeronaveController;
 import Modelo.Aeronave;
 import controlador.LoginController;
 import java.util.List;
@@ -18,13 +18,13 @@ import modelo.Cliente;
  */
 public class JPanelRegistrarAeronave extends javax.swing.JPanel {
 
-    private AeronaveController aeroController;
+    private CDUVAeronaveController aeroController;
     /**
      * Creates new form JPanelAeronave
      */
     public JPanelRegistrarAeronave() {
         initComponents();
-        aeroController = new AeronaveController();
+        aeroController = new CDUVAeronaveController();
         Cliente cliente = LoginController.getClienteActual();
         txtusuario.setText(
                 " " + cliente.getNombres()
@@ -255,14 +255,18 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
         if (registrado) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Aeronave registrada correctamente"
+                    aeroController.getMensaje(),
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
             );
             setear();
             cargarAeronavesEnTabla();
         } else {
             JOptionPane.showMessageDialog(
                     this,
-                    "Error al registrar aeronave"
+                    aeroController.getMensaje(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
             );
         }
     }//GEN-LAST:event_btnGuardarActionPerformed

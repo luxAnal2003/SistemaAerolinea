@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import Controlador.AeronaveController;
+import Controlador.CDUVAeronaveController;
 import Controlador.TripulacionController;
 import Controlador.VueloTripulacionController;
 import Modelo.Aeronave;
@@ -26,7 +26,7 @@ import modelo.Vuelo;
  */
 public class JPanelAsignarTripulante extends javax.swing.JPanel {
 
-    private AeronaveController aeroController;
+    private CDUVAeronaveController aeroController;
     private TripulacionController tripController;
     private VueloController vueloController;
     private VueloTripulacionController asignacionController;
@@ -42,7 +42,7 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
      */
     public JPanelAsignarTripulante() {
         initComponents();
-        aeroController = new AeronaveController();
+        aeroController = new CDUVAeronaveController();
         tripController = new TripulacionController();
         vueloController = new VueloController();
         asignacionController = new VueloTripulacionController();
@@ -54,8 +54,8 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent e) {
-                String texto = txtBuscador.getText().trim();
-                if (texto.isEmpty()) {
+                String Texto = txtBuscador.getText().trim();
+                if (Texto.isEmpty()) {
                     cargarVuelosEnTabla();
                 }
             }

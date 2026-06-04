@@ -23,7 +23,7 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         JPanelReservas reser = new JPanelReservas();
-        ShowPanel(reser);
+        showPanel(reser);
     }
 
     /**
@@ -140,7 +140,7 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
         this.cerrarSesion();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
-    private void ShowPanel(JPanel p){
+    private void showPanel(JPanel p){
         p.setSize(857, 492);
         p.setLocation(160,0);
         

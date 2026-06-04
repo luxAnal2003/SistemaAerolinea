@@ -18,11 +18,15 @@ import utils.DatabaseConnection;
  *
  * @author admin
  */
-public class AeronaveController {
+public class CDUVAeronaveController {
     
+    private String mensaje;
+
+    public String getMensaje() {
+        return mensaje;
+    }
     public boolean crearAeronave(Aeronave aeronave) {
         if (!validarDatosAeronave(aeronave)) {
-            System.err.println("Error: Datos de aeronave inválidos");
             return false;
         }
         String sql =
@@ -35,9 +39,15 @@ public class AeronaveController {
             stmt.setString(  3,aeronave.getEstado()
             );
             int resultado =stmt.executeUpdate();
-            return resultado > 0;
+            
+            if (resultado > 0) {
+                mensaje = "Aeronave registrada correctamente.";
+                return true;
+            }
+            mensaje = "No se pudo registrar la aeronave.";
+            return false;
         } catch (SQLException e) {
-            System.err.println( "Error al crear aeronave: " + e.getMessage());
+            mensaje = "Error al crear aeronave: " + e.getMessage();
             return false;
         }
     }
@@ -73,7 +83,7 @@ public class AeronaveController {
     }
     
     private boolean tieneVuelosFuturos( int idAero) {
-        String sql//no seria vuelo sino vuelo tripulantes--- verificar
+        String sql
                 = "SELECT COUNT(*) "
                 + "FROM vuelos "
                 + "WHERE id_aeronave = ? "
@@ -90,26 +100,65 @@ public class AeronaveController {
 
         return false;
     }
-    
+   
     private boolean validarDatosAeronave(Aeronave aeronave) {
+
         if (aeronave == null) {
+            mensaje = "La aeronave es nula";
             return false;
         }
-        if (aeronave.getModelo() == null|| aeronave.getModelo().trim().isEmpty()) {
-            System.err.println("El modelo es obligatorio");
+
+        String modelo = aeronave.getModelo();
+
+        if (modelo == null || modelo.trim().isEmpty()) {
+            mensaje = "El modelo es obligatorio";
             return false;
         }
-        if (aeronave.getCapacidad() <= 0) {
-            System.err.println("La capacidad debe ser mayor a 0" );
-            return false;
-        }
+
         if (aeronave.getEstado() == null || aeronave.getEstado().trim().isEmpty()) {
-            System.err.println("El estado es obligatorio"  );
+            mensaje = "El estado es obligatorio";
             return false;
         }
+        
+        if (modelo.trim().length() < 3) {
+            mensaje = "El modelo debe tener al menos 3 caracteres";
+            return false;
+        }
+
+        if (modelo.trim().length() > 30) {
+            mensaje = "El modelo no puede superar los 30 caracteres";
+            return false;
+        }
+
+        if (!modelo.matches("^[a-zA-Z0-9 ]+$")) {
+            mensaje = "El modelo solo puede contener letras, números y espacios";
+            return false;
+        }
+
+        if (aeronave.getCapacidad() <= 0) {
+            mensaje = "La capacidad debe ser mayor que cero";
+            return false;
+        }
+
+        if (aeronave.getCapacidad() > 200) {
+            mensaje = "La capacidad máxima permitida es 200 pasajeros";
+            return false;
+        }
+
+        String estado = aeronave.getEstado();
+
+        if (estado == null
+                || estado.trim().isEmpty()
+                || estado.equalsIgnoreCase("Seleccione...")) {
+
+            mensaje = "Debe seleccionar un estado";
+            return false;
+        }
+
+        mensaje = "";
         return true;
     }
-    
+
     public List<Aeronave> buscarAeronave( String criterio) {
         List<Aeronave> aeronaves= new ArrayList<>();
         String sql

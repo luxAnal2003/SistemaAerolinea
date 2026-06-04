@@ -179,7 +179,7 @@ public class JPanelReservas extends javax.swing.JPanel {
             txtCedula.setEditable(true);
             txtFechaNacimiento.setEditable(true);
 
-            btnAñadirPasajero.setEnabled(true);
+            btnAniadirPasajero.setEnabled(true);
         });
 
         rbtnNoAñadir.addActionListener(e -> {
@@ -275,7 +275,7 @@ public class JPanelReservas extends javax.swing.JPanel {
         jLabel22 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         cbxOrigen = new javax.swing.JComboBox<>();
-        btnAñadirPasajero = new javax.swing.JButton();
+        btnAniadirPasajero = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(225, 238, 250));
 
@@ -548,15 +548,15 @@ public class JPanelReservas extends javax.swing.JPanel {
         cbxOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(cbxOrigen, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 70, -1));
 
-        btnAñadirPasajero.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnAñadirPasajero.setForeground(new java.awt.Color(0, 102, 204));
-        btnAñadirPasajero.setText("Añadir pasajero");
-        btnAñadirPasajero.addActionListener(new java.awt.event.ActionListener() {
+        btnAniadirPasajero.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnAniadirPasajero.setForeground(new java.awt.Color(0, 102, 204));
+        btnAniadirPasajero.setText("Añadir pasajero");
+        btnAniadirPasajero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAñadirPasajeroActionPerformed(evt);
+                btnAniadirPasajeroActionPerformed(evt);
             }
         });
-        jPanel3.add(btnAñadirPasajero, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 230, 130, 30));
+        jPanel3.add(btnAniadirPasajero, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 230, 130, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -707,7 +707,7 @@ public class JPanelReservas extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnComprarActionPerformed
 
-    private void btnAñadirPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAñadirPasajeroActionPerformed
+    private void btnAniadirPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAniadirPasajeroActionPerformed
         if (vueloSeleccionado == null) {
             JOptionPane.showMessageDialog(
                     this,
@@ -782,7 +782,7 @@ public class JPanelReservas extends javax.swing.JPanel {
                     "Error al registrar pasajero"
             );
         }
-    }//GEN-LAST:event_btnAñadirPasajeroActionPerformed
+    }//GEN-LAST:event_btnAniadirPasajeroActionPerformed
 
     private void setear() {
         txtNombresApellidos.setText("");
@@ -811,7 +811,7 @@ public class JPanelReservas extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAñadirPasajero;
+    private javax.swing.JButton btnAniadirPasajero;
     private javax.swing.JButton btnComprar;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbxDestino;

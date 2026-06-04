@@ -377,14 +377,18 @@ public class JPanelRegistrarTripulación extends javax.swing.JPanel {
         if (registrado) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Tripulación registrada correctamente"
+                    tripuController.getMensaje(),
+                    "Éxito",
+            JOptionPane.INFORMATION_MESSAGE
             );
             setear();
             cargarTarjetasTripulacion();
         } else {
             JOptionPane.showMessageDialog(
                     this,
-                    "Error al registrar tripulación"
+                    tripuController.getMensaje(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
             );
         }
     }//GEN-LAST:event_btnGuardarActionPerformed

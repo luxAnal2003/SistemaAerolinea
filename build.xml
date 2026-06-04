@@ -10,6 +10,26 @@
 <project name="SistemaAerolinea" default="default" basedir=".">
     <description>Builds, tests, and runs the project SistemaAerolinea.</description>
     <import file="nbproject/build-impl.xml"/>
+    <target name="checkstyle">
+        <java classname="com.puppycrawl.tools.checkstyle.Main"
+              fork="true"
+              failonerror="false">
+            <classpath>
+                <pathelement location="tools/checkstyle-13.4.2-all.jar"/>
+            </classpath>
+
+            <arg value="-c"/>
+            <arg value="checkstyle.xml"/>
+
+            <arg value="src"/>
+        </java>
+    </target>
+    
+    <target name="javaversion">
+        <exec executable="java">
+            <arg value="-version"/>
+        </exec>
+    </target>
     <!--
 
     There exist several targets which are by default empty and which can be 

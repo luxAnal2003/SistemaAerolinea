@@ -20,10 +20,15 @@ import java.util.List;
  */
 public class TripulacionController {
 
+    private String mensaje;
+
+    public String getMensaje() {
+        return mensaje;
+    }
+    
     public boolean crearTripu(Tripulacion trip) {
 
         if (!validarDatosTrip(trip)) {
-            System.err.println("Error: Datos de tripulación inválidos");
             return false;
         }
 
@@ -32,31 +37,24 @@ public class TripulacionController {
                 + "(cedula, nombre, apellido, rol, licencia) "
                 + "VALUES (?, ?, ?, ?, ?)";
 
-        try (
-                PreparedStatement stmt
-                = DatabaseConnection
-                        .getConnection()
-                        .prepareStatement(sql)) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, trip.getCedula());
+            stmt.setString(2, trip.getNombre());
+            stmt.setString(3, trip.getApellido());
+            stmt.setString(4, trip.getRol());
+            stmt.setString(5, trip.getLicencia());
 
-                    stmt.setString(1, trip.getCedula());
-                    stmt.setString(2, trip.getNombre());
-                    stmt.setString(3, trip.getApellido());
-                    stmt.setString(4, trip.getRol());
-                    stmt.setString(5, trip.getLicencia());
+            int resultado = stmt.executeUpdate();
 
-                    int resultado = stmt.executeUpdate();
-
-                    return resultado > 0;
-
-                } catch (SQLException e) {
-
-                    System.err.println(
-                            "Error al crear tripulante: "
-                            + e.getMessage()
-                    );
-
-                    return false;
-                }
+            if (resultado > 0) {
+                mensaje = "Tripulante registrado correctamente.";
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            mensaje = "Error al crear tripulante: " + e.getMessage();
+            return false;
+        }
     }
 
     public boolean actualizarTripu(Tripulacion t) {
@@ -87,49 +85,111 @@ public class TripulacionController {
     }
 
     private boolean validarDatosTrip(Tripulacion trip) {
+
         if (trip == null) {
-            return false;
-        }
-
-        if (trip.getCedula() == null || trip.getCedula().trim().isEmpty()) {
-            System.err.println("La cédula es obligatoria");
-            return false;
-        }
-
-        if (!trip.getCedula().matches("\\d{10}")) {
-            System.err.println("La cédula debe contener exactamente 10 números");
-            return false;
-        }
-
-        if (existeCedula(trip.getCedula())) {
-            System.err.println("Ya existe un tripulante " + "con esa cédula");
+            mensaje = "Los datos del tripulante son inválidos.";
             return false;
         }
 
         if (trip.getNombre() == null || trip.getNombre().trim().isEmpty()) {
-            System.err.println("El nombre es obligatorio");
+            mensaje = "El nombre es obligatorio";
+            return false;
+        }
+
+        if (trip.getNombre().trim().length() < 3) {
+            mensaje = "El nombre debe tener mínimo 3 caracteres";
+            return false;
+        }
+
+        if (trip.getNombre().trim().length() > 50) {
+            mensaje = "El nombre no puede superar los 50 caracteres";
+            return false;
+        }
+
+        if (!trip.getNombre().matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+            mensaje = "El nombre solo puede contener letras y espacios";
             return false;
         }
 
         if (trip.getApellido() == null || trip.getApellido().trim().isEmpty()) {
-            System.err.println("El apellido es obligatorio");
+            mensaje = "El apellido es obligatorio";
             return false;
         }
 
-        if (trip.getRol() == null || trip.getRol().trim().isEmpty()) {
-            System.err.println("El rol es obligatorio");
+        if (trip.getApellido().trim().length() < 3) {
+            mensaje = "El apellido debe tener mínimo 3 caracteres";
+            return false;
+        }
+
+        if (trip.getApellido().trim().length() > 50) {
+            mensaje = "El apellido no puede superar los 50 caracteres";
+            return false;
+        }
+
+        if (!trip.getApellido().matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+            mensaje = "El apellido solo puede contener letras y espacios";
+            return false;
+        }
+
+        if (trip.getCedula() == null || trip.getCedula().trim().isEmpty()) {
+            mensaje = "La cédula es obligatoria";
+            return false;
+        }
+
+        if (trip.getCedula().length() < 10) {
+            mensaje = "La cédula debe contener 10 dígitos";
+            return false;
+        }
+
+        if (trip.getCedula().length() > 10) {
+            mensaje = "La cédula debe contener exactamente 10 dígitos";
+            return false;
+        }
+
+        if (!trip.getCedula().matches("\\d+")) {
+            mensaje = "La cédula solo puede contener números";
+            return false;
+        }
+
+        if (existeCedula(trip.getCedula())) {
+            mensaje = "Ya existe un tripulante con esa cédula";
             return false;
         }
 
         if (trip.getLicencia() == null || trip.getLicencia().trim().isEmpty()) {
-            System.err.println("La licencia es obligatoria");
+            mensaje = "La licencia es obligatoria";
+            return false;
+        }
+
+        if (trip.getLicencia().length() < 5) {
+            mensaje = "La licencia debe tener al menos 5 caracteres";
+            return false;
+        }
+
+        if (trip.getLicencia().length() > 15) {
+            mensaje = "La licencia no puede superar los 15 caracteres";
+            return false;
+        }
+
+        if (!trip.getLicencia().matches("^[a-zA-Z0-9]+$")) {
+            mensaje = "La licencia solo puede contener letras y números";
             return false;
         }
 
         if (existeLicencia(trip.getLicencia())) {
-            System.err.println("Ya existe un tripulante " + "con esa licencia");
+            mensaje = "Ya existe un tripulante con esa licencia";
             return false;
         }
+
+        if (trip.getRol() == null
+                || trip.getRol().trim().isEmpty()
+                || trip.getRol().equalsIgnoreCase("Seleccione...")){
+
+            mensaje = "Debe seleccionar un rol";
+            return false;
+        }
+
+        mensaje = "";
         return true;
     }
 
