@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Controlador;
+package controlador;
 
 import Modelo.Tripulacion;
 import utils.DatabaseConnection;
@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Connection;
+import java.util.Locale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,9 +201,9 @@ public class TripulacionController {
                 + "WHERE cedula = ?";
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
             stmt.setString(1, cedula);
-            ResultSet rs = stmt.executeQuery();
-
-            return rs.next();
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
         } catch (SQLException e) {
             System.err.println("Error al verificar cédula: " + e.getMessage());
 
@@ -217,9 +218,9 @@ public class TripulacionController {
                 + "WHERE licencia = ?";
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
             stmt.setString(1, licencia);
-            ResultSet rs = stmt.executeQuery();
-
-            return rs.next();
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
         } catch (SQLException e) {
             System.err.println("Error al verificar licencia: " + e.getMessage());
 
@@ -231,8 +232,9 @@ public class TripulacionController {
         List<Tripulacion> lista = new ArrayList<>();
         String sql = "SELECT * FROM tripulacion";
 
-        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stmt
+                = DatabaseConnection.getConnection().prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 lista.add(mapResultSetToTripulacion(rs));
             }
@@ -268,19 +270,15 @@ public class TripulacionController {
                 + "OR LOWER(licencia) LIKE ? "
                 + "OR cedula LIKE ?";
 
-        try (
-                Connection con = DatabaseConnection.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = DatabaseConnection.getConnection();PreparedStatement stmt = con.prepareStatement(sql);ResultSet rs = stmt.executeQuery()) {
 
-            String busquedaLike
-                    = "%" + criterio.toLowerCase() + "%";
+            String busquedaLike = "%" + criterio.toLowerCase(Locale.ROOT) + "%";
 
             stmt.setString(1, busquedaLike);
             stmt.setString(2, busquedaLike);
             stmt.setString(3, busquedaLike);
             stmt.setString(4, busquedaLike);
             stmt.setString(5, busquedaLike);
-
-            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
 

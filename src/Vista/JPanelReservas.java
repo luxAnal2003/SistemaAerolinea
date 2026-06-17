@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import Controlador.ReservaController;
+import controlador.ReservaController;
 import Modelo.PasajeroExtra;
 import Modelo.Reserva;
 import controlador.LoginController;

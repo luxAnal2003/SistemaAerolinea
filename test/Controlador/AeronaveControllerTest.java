@@ -4,6 +4,7 @@
  */
 package Controlador;
 
+import controlador.CDUVAeronaveController;
 import Modelo.Aeronave;
 import java.util.List;
 import org.junit.Test;

@@ -16,21 +16,22 @@ import modelo.Cliente;
  *
  * @author admin
  */
-public class JPanelRegistrarAeronave extends javax.swing.JPanel {
+public class JPanelEliminarAeronave extends javax.swing.JPanel {
 
     private CDUVAeronaveController aeroController;
+    private int idAero;
+
     /**
      * Creates new form JPanelAeronave
      */
-    public JPanelRegistrarAeronave() {
+    public JPanelEliminarAeronave() {
         initComponents();
         aeroController = new CDUVAeronaveController();
         Cliente cliente = LoginController.getClienteActual();
         txtusuario.setText(
                 " " + cliente.getNombres()
         );
-        
-        
+
         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent e) {
@@ -40,7 +41,7 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
                 }
             }
         });
-        
+
         this.cargarAeronavesEnTabla();
     }
 
@@ -61,17 +62,9 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableAeronave = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        txtModelo = new javax.swing.JTextField();
-        SpinCapacidad = new javax.swing.JSpinner();
-        cbxEstado = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        btnCerrarSesion = new javax.swing.JButton();
-        btnGuardar = new javax.swing.JButton();
+        btnActivar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
@@ -92,7 +85,7 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
                 txtBuscadorKeyPressed(evt);
             }
         });
-        jPanel3.add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 10, 160, 20));
+        jPanel3.add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 20, 330, 20));
 
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/search.png"))); // NOI18N
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -100,7 +93,7 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
                 btnBuscarActionPerformed(evt);
             }
         });
-        jPanel3.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 10, 40, 20));
+        jPanel3.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 20, 40, 20));
 
         tableAeronave.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -115,69 +108,38 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tableAeronave);
 
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 47, 350, 330));
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 47, 520, 340));
 
         jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
         jLabel10.setText("Listado de Aeronaves");
         jLabel10.setToolTipText("");
-        jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 150, 20));
+        jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 150, 20));
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel8.setFont(new java.awt.Font("Yu Gothic UI", 1, 12)); // NOI18N
-        jLabel8.setText("Estado");
-        jLabel8.setToolTipText("");
-        jPanel4.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 160, -1));
-
-        jLabel11.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
-        jLabel11.setText("Registrar Aeronave");
-        jLabel11.setToolTipText("");
-        jPanel4.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 160, -1));
-
-        jLabel12.setFont(new java.awt.Font("Yu Gothic UI", 1, 12)); // NOI18N
-        jLabel12.setText("Modelo");
-        jLabel12.setToolTipText("");
-        jPanel4.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 160, -1));
-
-        jLabel13.setFont(new java.awt.Font("Yu Gothic UI", 1, 12)); // NOI18N
-        jLabel13.setText("Capacidad");
-        jLabel13.setToolTipText("");
-        jPanel4.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 160, -1));
-        jPanel4.add(txtModelo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 250, 30));
-        jPanel4.add(SpinCapacidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 250, 30));
-
-        cbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Activo", "Mantenimiento", "Inactivo" }));
-        jPanel4.add(cbxEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 250, 30));
-
-        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/one-way-trip.png"))); // NOI18N
-        jPanel4.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 150, 150));
-
-        btnCerrarSesion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnCerrarSesion.setForeground(new java.awt.Color(0, 102, 204));
-        btnCerrarSesion.setText("Cancelar");
-        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/power-button.png"))); // NOI18N
+        btnActivar.setText("   Activar");
+        btnActivar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCerrarSesionActionPerformed(evt);
+                btnActivarActionPerformed(evt);
             }
         });
-        jPanel4.add(btnCerrarSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 250, 120, 30));
+        jPanel3.add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 150, 140, 30));
 
-        btnGuardar.setBackground(new java.awt.Color(0, 102, 204));
-        btnGuardar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnGuardar.setForeground(new java.awt.Color(255, 255, 255));
-        btnGuardar.setText("Guardar");
-        btnGuardar.setBorder(null);
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/power-on.png"))); // NOI18N
+        btnEliminar.setText("  Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
-        jPanel4.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, 120, 30));
+        jPanel3.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 110, 140, 30));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/one-way-trip.png"))); // NOI18N
+        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 210, 130, 130));
 
         jLabel9.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
-        jLabel9.setText("GESTIÓN DE AERONAVES");
+        jLabel9.setText("ELIMINAR AERONAVES");
         jLabel9.setToolTipText("");
 
         jButton1.setBackground(new java.awt.Color(225, 238, 250));
@@ -203,10 +165,7 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
                             .addGap(20, 20, 20)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(20, 20, 20)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 714, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -219,68 +178,67 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
                 .addContainerGap(446, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 8, Short.MAX_VALUE)
                     .addComponent(jLabel9)
                     .addGap(15, 15, 15)
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(17, 17, 17)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(18, 18, 18)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 22, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
-        this.setear();
-        this.cargarAeronavesEnTabla();
-    }//GEN-LAST:event_btnCerrarSesionActionPerformed
-
     private void setear() {
-        txtModelo.setText("");
-        SpinCapacidad.setValue(0);
-        cbxEstado.setSelectedIndex(0);
+//        txtModelo.setText("");
+//        SpinCapacidad.setValue(0);
+//        cbxEstado.setSelectedIndex(0);
+//        idAero = 0;
     }
-    
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String modelo = txtModelo.getText().trim();
-        int capacidad = (int) SpinCapacidad.getValue();
-        String estado= cbxEstado.getSelectedItem().toString();
-        Aeronave aeronave = new Aeronave();
-        aeronave.setModelo(modelo);
-        aeronave.setCapacidad(capacidad);
-        aeronave.setEstado(estado);
-        boolean registrado = aeroController.crearAeronave(aeronave);
-
-        if (registrado) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    aeroController.getMensaje(),
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            setear();
-            cargarAeronavesEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(
-                    this,
-                    aeroController.getMensaje(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
-    }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         this.buscarAeronave();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
-         if (evt.getKeyCode() == evt.VK_ENTER) {
+        if (evt.getKeyCode() == evt.VK_ENTER) {
             this.buscarAeronave();
         }
     }//GEN-LAST:event_txtBuscadorKeyPressed
-    
+
+    private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
+        this.activar();
+    }//GEN-LAST:event_btnActivarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        this.desactivar();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void activar() {
+        int fila = tableAeronave.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar");
+            return;
+        }
+        idAero = Integer.parseInt(tableAeronave.getValueAt(fila, 0).toString());
+
+        String mensaje = aeroController.activarAero(idAero);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarAeronavesEnTabla();
+    }
+
+    private void desactivar() {
+        int fila = tableAeronave.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null,"Seleccione una aeronave para desactivar");
+            return;
+        }
+        idAero = Integer.parseInt(tableAeronave.getValueAt(fila, 0).toString());
+
+        String mensaje = aeroController.desactivarAero(idAero);
+        JOptionPane.showMessageDialog(null, mensaje);
+        cargarAeronavesEnTabla();
+    }
+
     private void buscarAeronave() {
         String criterio = txtBuscador.getText().trim();
 
@@ -338,27 +296,20 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
 
         tableAeronave.setModel(model);
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSpinner SpinCapacidad;
+    private javax.swing.JButton btnActivar;
     private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnCerrarSesion;
-    private javax.swing.JButton btnGuardar;
-    private javax.swing.JComboBox<String> cbxEstado;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable tableAeronave;
     private javax.swing.JTextField txtBuscador;
-    private javax.swing.JTextField txtModelo;
     private javax.swing.JLabel txtusuario;
     // End of variables declaration//GEN-END:variables
 }

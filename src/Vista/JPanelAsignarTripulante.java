@@ -4,9 +4,9 @@
  */
 package Vista;
 
-import Controlador.CDUVAeronaveController;
-import Controlador.TripulacionController;
-import Controlador.VueloTripulacionController;
+import controlador.CDUVAeronaveController;
+import controlador.TripulacionController;
+import controlador.VueloTripulacionController;
 import Modelo.Aeronave;
 import Modelo.Tripulacion;
 import controlador.LoginController;

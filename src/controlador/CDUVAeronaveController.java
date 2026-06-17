@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Controlador;
+package controlador;
 
 import Modelo.Aeronave;
 import java.sql.Connection;
@@ -19,27 +19,38 @@ import utils.DatabaseConnection;
  * @author admin
  */
 public class CDUVAeronaveController {
-    
+
     private String mensaje;
 
+    /**
+     * Devuelve un mensaje a la vista
+     *
+     * @return El mensaje dependiendo del resultado
+     */
     public String getMensaje() {
         return mensaje;
     }
+
+    /**
+     * Crea la aeronave
+     *
+     * @param aeronave Recibe una aeronave a registrar
+     * @return El registro correcto o incorrecto
+     */
     public boolean crearAeronave(Aeronave aeronave) {
         if (!validarDatosAeronave(aeronave)) {
             return false;
         }
-        String sql =
-                "INSERT INTO aeronaves "
+        String sql
+                = "INSERT INTO aeronaves "
                 + "(modelo, capacidad, estado) "
                 + "VALUES (?, ?, ?)";
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
-            stmt.setString(1,aeronave.getModelo() );
-            stmt.setInt(2, aeronave.getCapacidad() );
-            stmt.setString(  3,aeronave.getEstado()
-            );
-            int resultado =stmt.executeUpdate();
-            
+            stmt.setString(1, aeronave.getModelo());
+            stmt.setInt(2, aeronave.getCapacidad());
+            stmt.setString(3, aeronave.getEstado());
+            int resultado = stmt.executeUpdate();
+
             if (resultado > 0) {
                 mensaje = "Aeronave registrada correctamente.";
                 return true;
@@ -51,13 +62,20 @@ public class CDUVAeronaveController {
             return false;
         }
     }
-    
-    public boolean actualizarAeronave(Aeronave aeronave,int idAero) {
+
+    /**
+     * Actualiza una aeronave
+     *
+     * @param aeronave Aeronave a actualizar
+     * @param idAero Id de la aeronave seleccionada
+     * @return True si se actualiza y false si no
+     */
+    public boolean actualizarAeronave(Aeronave aeronave, int idAero) {
         if (!validarDatosAeronave(aeronave)) {
-            System.err.println( "Error: Datos de aeronave inválidos");
+            System.err.println("Error: Datos de aeronave inválidos");
             return false;
         }
-        if (aeronave.getEstado().equals("Mantenimiento")|| aeronave.getEstado().equals("Inactivo")) {
+        if (aeronave.getEstado().equals("Mantenimiento") || aeronave.getEstado().equals("Inactivo")) {
             if (tieneVuelosFuturos(idAero)) {
                 System.err.println("No se puede cambiar el estado de la aeronave porque tiene "
                         + "vuelos futuros asignados");
@@ -68,7 +86,7 @@ public class CDUVAeronaveController {
                 = "UPDATE aeronaves "
                 + "SET modelo=?, capacidad=?, estado=? "
                 + "WHERE id_aeronave=?";
-        try (PreparedStatement stmt = DatabaseConnection.getConnection() .prepareStatement(sql)) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
             stmt.setString(1, aeronave.getModelo());
             stmt.setInt(2, aeronave.getCapacidad());
             stmt.setString(3, aeronave.getEstado());
@@ -81,8 +99,15 @@ public class CDUVAeronaveController {
             return false;
         }
     }
-    
-    private boolean tieneVuelosFuturos( int idAero) {
+
+    /**
+     * Verifica si una aeronave tiene vuelos programados con fecha de salida
+     * posterior a la fecha y hora actual.
+     *
+     * @param idAero Identificador de la aeronave que se desea verificar.
+     * @return si la aeronave tiene al menos un vuelo futuro
+     */
+    private boolean tieneVuelosFuturos(int idAero) {
         String sql
                 = "SELECT COUNT(*) "
                 + "FROM vuelos "
@@ -100,7 +125,14 @@ public class CDUVAeronaveController {
 
         return false;
     }
-   
+
+    /**
+     * Valida los datos de una aeronave antes de realizar operaciones de
+     * registro o actualización.
+     *
+     * @param aeronave Aeronave cuyos datos serán validados.
+     * @return true si todos los datos son válidos y false caso contrario
+     */
     private boolean validarDatosAeronave(Aeronave aeronave) {
 
         if (aeronave == null) {
@@ -119,7 +151,7 @@ public class CDUVAeronaveController {
             mensaje = "El estado es obligatorio";
             return false;
         }
-        
+
         if (modelo.trim().length() < 3) {
             mensaje = "El modelo debe tener al menos 3 caracteres";
             return false;
@@ -159,22 +191,22 @@ public class CDUVAeronaveController {
         return true;
     }
 
-    public List<Aeronave> buscarAeronave( String criterio) {
-        List<Aeronave> aeronaves= new ArrayList<>();
+    public List<Aeronave> buscarAeronave(String criterio) {
+        List<Aeronave> aeronaves = new ArrayList<>();
         String sql
                 = "SELECT id_aeronave, modelo, capacidad, estado "
                 + "FROM aeronaves "
                 + "WHERE LOWER(modelo) LIKE ? "
                 + "OR CAST(capacidad AS CHAR) LIKE ? "
                 + "OR LOWER(estado) LIKE ?";
-        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement stmt= con.prepareStatement(sql)) {
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
             String busquedaLike = "%" + criterio.toLowerCase() + "%";
             stmt.setString(1, busquedaLike);
             stmt.setString(2, busquedaLike);
             stmt.setString(3, busquedaLike);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Aeronave aeronave= new Aeronave();
+                Aeronave aeronave = new Aeronave();
                 aeronave.setIdAeronave(rs.getInt("id_aeronave"));
                 aeronave.setModelo(rs.getString("modelo"));
                 aeronave.setCapacidad(rs.getInt("capacidad"));
@@ -220,7 +252,7 @@ public class CDUVAeronaveController {
                 aeronaves.add(aeronave);
             }
         } catch (SQLException e) {
-            System.err.println( "Error SQL al obtener aeronaves: "+ e.getMessage());
+            System.err.println("Error SQL al obtener aeronaves: " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
@@ -233,13 +265,13 @@ public class CDUVAeronaveController {
                     con.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: "+ e.getMessage() );
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
         return aeronaves;
     }
-    
-    public Aeronave obtenerAeronavePorId( int idAeronave) {
+
+    public Aeronave obtenerAeronavePorId(int idAeronave) {
         Aeronave aeronave = null;
         String sql
                 = "SELECT id_aeronave, modelo, capacidad, estado "
@@ -256,12 +288,12 @@ public class CDUVAeronaveController {
             if (rs.next()) {
                 aeronave = new Aeronave();
                 aeronave.setIdAeronave(rs.getInt("id_aeronave"));
-                aeronave.setModelo(rs.getString("modelo") );
+                aeronave.setModelo(rs.getString("modelo"));
                 aeronave.setCapacidad(rs.getInt("capacidad"));
                 aeronave.setEstado(rs.getString("estado"));
             }
         } catch (SQLException e) {
-            System.err.println( "Error SQL al obtener aeronave por ID: " + e.getMessage() );
+            System.err.println("Error SQL al obtener aeronave por ID: " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
@@ -278,5 +310,71 @@ public class CDUVAeronaveController {
             }
         }
         return aeronave;
+    }
+
+    public String activarAero(int idAeronave) {
+
+        Aeronave aero = obtenerAeronavePorId(idAeronave);
+
+        if (aero == null) {
+            return "La aeronave no existe";
+        }
+
+        if ("Mantenimiento".equalsIgnoreCase(aero.getEstado())) {
+            return "La aeronave se encuentra en mantenimiento y ya está activa.";
+        }
+
+        if ("Activo".equalsIgnoreCase(aero.getEstado())) {
+            return "La aeronave ya está activa";
+        }
+
+        String sql = "UPDATE aeronaves SET estado = 'Activo' WHERE id_aeronave = ?";
+
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idAeronave);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0
+                    ? "Aeronave activada correctamente"
+                    : "Error al activar la aeronave";
+
+        } catch (SQLException e) {
+            return "Error al activar la aeronave: " + e.getMessage();
+        }
+    }
+
+    public String desactivarAero(int idAeronave) {
+
+        Aeronave aero = obtenerAeronavePorId(idAeronave);
+
+        if (aero == null) {
+            return "La aeronave no existe";
+        }
+
+        if ("Mantenimiento".equalsIgnoreCase(aero.getEstado())) {
+            return "No se puede desactivar la aeronave porque se encuentra en mantenimiento.";
+        }
+
+        if ("Inactivo".equalsIgnoreCase(aero.getEstado())) {
+            return "La aeronave ya está inactiva";
+        }
+
+        String sql = "UPDATE aeronaves SET estado = 'Inactivo' WHERE id_aeronave = ?";
+
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idAeronave);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0
+                    ? "Aeronave desactivada correctamente"
+                    : "Error al desactivar la aeronave";
+
+        } catch (SQLException e) {
+            return "Error al desactivar la aeronave: " + e.getMessage();
+        }
     }
 }

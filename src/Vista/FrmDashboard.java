@@ -40,15 +40,17 @@ public class FrmDashboard extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        btnOperaciones = new javax.swing.JButton();
+        btnEliminarAero = new javax.swing.JButton();
         btnDashboard = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
-        btnEditarTripulacion = new javax.swing.JButton();
+        btnEliminarTripulacion = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         btnRegresar = new javax.swing.JButton();
         btnCerrarSesion = new javax.swing.JButton();
         btnTripulacion = new javax.swing.JButton();
+        btnEditarTripulacion1 = new javax.swing.JButton();
+        btnOperaciones1 = new javax.swing.JButton();
         content = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -73,18 +75,18 @@ public class FrmDashboard extends javax.swing.JFrame {
         jLabel2.setToolTipText("");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 30, 70, 10));
 
-        btnOperaciones.setBackground(new java.awt.Color(0, 51, 102));
-        btnOperaciones.setForeground(new java.awt.Color(255, 255, 255));
-        btnOperaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
-        btnOperaciones.setText("Operaciones");
-        btnOperaciones.setBorder(null);
-        btnOperaciones.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnOperaciones.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminarAero.setBackground(new java.awt.Color(0, 51, 102));
+        btnEliminarAero.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminarAero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnEliminarAero.setText("Eliminar aeronave");
+        btnEliminarAero.setBorder(null);
+        btnEliminarAero.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnEliminarAero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOperacionesActionPerformed(evt);
+                btnEliminarAeroActionPerformed(evt);
             }
         });
-        jPanel1.add(btnOperaciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 120, -1));
+        jPanel1.add(btnEliminarAero, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 120, -1));
 
         btnDashboard.setBackground(new java.awt.Color(0, 51, 102));
         btnDashboard.setForeground(new java.awt.Color(255, 255, 255));
@@ -120,18 +122,18 @@ public class FrmDashboard extends javax.swing.JFrame {
         });
         jPanel1.add(btnEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 120, -1));
 
-        btnEditarTripulacion.setBackground(new java.awt.Color(0, 51, 102));
-        btnEditarTripulacion.setForeground(new java.awt.Color(255, 255, 255));
-        btnEditarTripulacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
-        btnEditarTripulacion.setText("Editar tripulación");
-        btnEditarTripulacion.setBorder(null);
-        btnEditarTripulacion.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnEditarTripulacion.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminarTripulacion.setBackground(new java.awt.Color(0, 51, 102));
+        btnEliminarTripulacion.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminarTripulacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnEliminarTripulacion.setText("Eliminar tripulación");
+        btnEliminarTripulacion.setBorder(null);
+        btnEliminarTripulacion.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnEliminarTripulacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditarTripulacionActionPerformed(evt);
+                btnEliminarTripulacionActionPerformed(evt);
             }
         });
-        jPanel1.add(btnEditarTripulacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 120, -1));
+        jPanel1.add(btnEliminarTripulacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, 120, -1));
 
         jLabel7.setFont(new java.awt.Font("Yu Gothic UI", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -170,7 +172,33 @@ public class FrmDashboard extends javax.swing.JFrame {
                 btnTripulacionActionPerformed(evt);
             }
         });
-        jPanel1.add(btnTripulacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 130, -1));
+        jPanel1.add(btnTripulacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 130, -1));
+
+        btnEditarTripulacion1.setBackground(new java.awt.Color(0, 51, 102));
+        btnEditarTripulacion1.setForeground(new java.awt.Color(255, 255, 255));
+        btnEditarTripulacion1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnEditarTripulacion1.setText("Editar tripulación");
+        btnEditarTripulacion1.setBorder(null);
+        btnEditarTripulacion1.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnEditarTripulacion1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarTripulacion1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEditarTripulacion1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 120, -1));
+
+        btnOperaciones1.setBackground(new java.awt.Color(0, 51, 102));
+        btnOperaciones1.setForeground(new java.awt.Color(255, 255, 255));
+        btnOperaciones1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnOperaciones1.setText("Operaciones");
+        btnOperaciones1.setBorder(null);
+        btnOperaciones1.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnOperaciones1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOperaciones1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnOperaciones1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 120, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 160, 490));
 
@@ -216,34 +244,43 @@ public class FrmDashboard extends javax.swing.JFrame {
     
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         JPanelRegistrarAeronave aero = new JPanelRegistrarAeronave();
-        ShowPanel(aero);
+        showPanel(aero);
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         JPanelEditarAeronave aero = new JPanelEditarAeronave();
-        ShowPanel(aero);
+        showPanel(aero);
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         this.cerrarSesion();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
-    private void btnEditarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarTripulacionActionPerformed
+    private void btnEliminarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarTripulacionActionPerformed
         JPanelEditarTripulación trip = new JPanelEditarTripulación();
-        ShowPanel(trip);
-    }//GEN-LAST:event_btnEditarTripulacionActionPerformed
+        showPanel(trip);
+    }//GEN-LAST:event_btnEliminarTripulacionActionPerformed
 
-    private void btnOperacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOperacionesActionPerformed
-        JPanelAsignarTripulante asignar = new JPanelAsignarTripulante();
-        ShowPanel(asignar);
-    }//GEN-LAST:event_btnOperacionesActionPerformed
+    private void btnEliminarAeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarAeroActionPerformed
+        JPanelEliminarAeronave eliminar = new JPanelEliminarAeronave();
+        showPanel(eliminar);
+    }//GEN-LAST:event_btnEliminarAeroActionPerformed
 
     private void btnTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTripulacionActionPerformed
         JPanelRegistrarTripulación trip = new JPanelRegistrarTripulación();
-        ShowPanel(trip);
+        showPanel(trip);
     }//GEN-LAST:event_btnTripulacionActionPerformed
 
-    private void ShowPanel(JPanel p){
+    private void btnEditarTripulacion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarTripulacion1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditarTripulacion1ActionPerformed
+
+    private void btnOperaciones1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOperaciones1ActionPerformed
+        JPanelAsignarTripulante asignar = new JPanelAsignarTripulante();
+        showPanel(asignar);
+    }//GEN-LAST:event_btnOperaciones1ActionPerformed
+
+    private void showPanel(JPanel p){
         p.setSize(760, 490);
         p.setLocation(160,0);
         
@@ -300,8 +337,10 @@ public class FrmDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnDashboard;
     private javax.swing.JButton btnEditar;
-    private javax.swing.JButton btnEditarTripulacion;
-    private javax.swing.JButton btnOperaciones;
+    private javax.swing.JButton btnEditarTripulacion1;
+    private javax.swing.JButton btnEliminarAero;
+    private javax.swing.JButton btnEliminarTripulacion;
+    private javax.swing.JButton btnOperaciones1;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JButton btnTripulacion;

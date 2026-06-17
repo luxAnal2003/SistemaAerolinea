@@ -8,7 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import Modelo.Reserva;
-import Controlador.ReservaController;
+import controlador.ReservaController;
 import java.util.List;
 
 public class ReservasHistorialFrame extends JFrame {

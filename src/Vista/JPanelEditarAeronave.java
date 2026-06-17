@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import Controlador.CDUVAeronaveController;
+import controlador.CDUVAeronaveController;
 import Modelo.Aeronave;
 import controlador.LoginController;
 import java.util.List;

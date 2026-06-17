@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import Controlador.TripulacionController;
+import controlador.TripulacionController;
 import Modelo.Tripulacion;
 import controlador.LoginController;
 import java.awt.Color;
