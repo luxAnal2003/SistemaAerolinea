@@ -257,8 +257,8 @@ public class FrmDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnEliminarTripulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarTripulacionActionPerformed
-        JPanelEditarTripulación trip = new JPanelEditarTripulación();
-        showPanel(trip);
+        JPanelEliminarTripulante eliminar = new JPanelEliminarTripulante();
+        showPanel(eliminar);
     }//GEN-LAST:event_btnEliminarTripulacionActionPerformed
 
     private void btnEliminarAeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarAeroActionPerformed
@@ -272,7 +272,8 @@ public class FrmDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTripulacionActionPerformed
 
     private void btnEditarTripulacion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarTripulacion1ActionPerformed
-        // TODO add your handling code here:
+        JPanelEditarTripulación trip = new JPanelEditarTripulación();
+        showPanel(trip);
     }//GEN-LAST:event_btnEditarTripulacion1ActionPerformed
 
     private void btnOperaciones1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOperaciones1ActionPerformed

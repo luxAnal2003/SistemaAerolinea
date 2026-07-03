@@ -265,7 +265,7 @@
                 <StringItem index="0" value="Seleccione..."/>
                 <StringItem index="1" value="Activo"/>
                 <StringItem index="2" value="Mantenimiento"/>
-                <StringItem index="3" value="Inactivo"/>
+                <StringItem index="3" value=" "/>
               </StringArray>
             </Property>
           </Properties>

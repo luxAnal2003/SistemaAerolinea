@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import controlador.CDUVAeronaveController;
+import controlador.AeronaveController;
 import Modelo.Aeronave;
 import controlador.LoginController;
 import java.util.List;
@@ -18,7 +18,7 @@ import modelo.Cliente;
  */
 public class JPanelEliminarAeronave extends javax.swing.JPanel {
 
-    private CDUVAeronaveController aeroController;
+    private AeronaveController aeroController;
     private int idAero;
 
     /**
@@ -26,7 +26,7 @@ public class JPanelEliminarAeronave extends javax.swing.JPanel {
      */
     public JPanelEliminarAeronave() {
         initComponents();
-        aeroController = new CDUVAeronaveController();
+        aeroController = new AeronaveController();
         Cliente cliente = LoginController.getClienteActual();
         txtusuario.setText(
                 " " + cliente.getNombres()

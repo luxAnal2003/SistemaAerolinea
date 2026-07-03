@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import controlador.CDUVAeronaveController;
+import controlador.AeronaveController;
 import controlador.TripulacionController;
 import controlador.VueloTripulacionController;
 import Modelo.Aeronave;
@@ -26,7 +26,7 @@ import modelo.Vuelo;
  */
 public class JPanelAsignarTripulante extends javax.swing.JPanel {
 
-    private CDUVAeronaveController aeroController;
+    private AeronaveController aeroController;
     private TripulacionController tripController;
     private VueloController vueloController;
     private VueloTripulacionController asignacionController;
@@ -42,7 +42,7 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
      */
     public JPanelAsignarTripulante() {
         initComponents();
-        aeroController = new CDUVAeronaveController();
+        aeroController = new AeronaveController();
         tripController = new TripulacionController();
         vueloController = new VueloController();
         asignacionController = new VueloTripulacionController();

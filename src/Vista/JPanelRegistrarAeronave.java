@@ -4,7 +4,7 @@
  */
 package Vista;
 
-import controlador.CDUVAeronaveController;
+import controlador.AeronaveController;
 import Modelo.Aeronave;
 import controlador.LoginController;
 import java.util.List;
@@ -18,13 +18,13 @@ import modelo.Cliente;
  */
 public class JPanelRegistrarAeronave extends javax.swing.JPanel {
 
-    private CDUVAeronaveController aeroController;
+    private AeronaveController aeroController;
     /**
      * Creates new form JPanelAeronave
      */
     public JPanelRegistrarAeronave() {
         initComponents();
-        aeroController = new CDUVAeronaveController();
+        aeroController = new AeronaveController();
         Cliente cliente = LoginController.getClienteActual();
         txtusuario.setText(
                 " " + cliente.getNombres()
@@ -147,7 +147,7 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
         jPanel4.add(txtModelo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 250, 30));
         jPanel4.add(SpinCapacidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 250, 30));
 
-        cbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Activo", "Mantenimiento", "Inactivo" }));
+        cbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Activo", "Mantenimiento", " " }));
         jPanel4.add(cbxEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 250, 30));
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));

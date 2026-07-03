@@ -18,7 +18,7 @@ import utils.DatabaseConnection;
  *
  * @author admin
  */
-public class CDUVAeronaveController {
+public class AeronaveController {
 
     private String mensaje;
 
@@ -75,7 +75,7 @@ public class CDUVAeronaveController {
             System.err.println("Error: Datos de aeronave inválidos");
             return false;
         }
-        if (aeronave.getEstado().equals("Mantenimiento") || aeronave.getEstado().equals("Inactivo")) {
+        if (aeronave.getEstado().equals("Mantenimiento")) {
             if (tieneVuelosFuturos(idAero)) {
                 System.err.println("No se puede cambiar el estado de la aeronave porque tiene "
                         + "vuelos futuros asignados");

@@ -4,7 +4,7 @@
  */
 package Controlador;
 
-import controlador.CDUVAeronaveController;
+import controlador.AeronaveController;
 import Modelo.Aeronave;
 import java.util.List;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class AeronaveControllerTest {
     public void testCrearAeronave() {
         System.out.println("crearAeronaveError");
 
-        CDUVAeronaveController instance = new CDUVAeronaveController();
+        AeronaveController instance = new AeronaveController();
 
         Aeronave aeronave = new Aeronave();
         aeronave.setModelo("");
@@ -40,7 +40,7 @@ public class AeronaveControllerTest {
         System.out.println("actualizarAeronave");
         Aeronave aeronave = null;
         int idAero = 0;
-        CDUVAeronaveController instance = new CDUVAeronaveController();
+        AeronaveController instance = new AeronaveController();
         boolean expResult = false;
         boolean result = instance.actualizarAeronave(aeronave, idAero);
         assertEquals(expResult, result);
@@ -51,7 +51,7 @@ public class AeronaveControllerTest {
     public void testBuscarAeronave() {
         System.out.println("buscarAeronave");
         String criterio = "xxxxx";
-        CDUVAeronaveController instance = new CDUVAeronaveController();
+        AeronaveController instance = new AeronaveController();
         List<Aeronave> result = instance.buscarAeronave(criterio);
         assertNotNull(result);
     }
@@ -59,7 +59,7 @@ public class AeronaveControllerTest {
     @Test
     public void testListarAeronaves() {
         System.out.println("listarAeronaves");
-        CDUVAeronaveController instance = new CDUVAeronaveController();
+        AeronaveController instance = new AeronaveController();
         List<Aeronave> expResult = null;
         List<Aeronave> result = instance.listarAeronaves();
         assertEquals(expResult, result);
@@ -70,7 +70,7 @@ public class AeronaveControllerTest {
     public void testObtenerAeronavePorId() {
         System.out.println("obtenerAeronavePorId");
         int idAeronave = 0;
-        CDUVAeronaveController instance = new CDUVAeronaveController();
+        AeronaveController instance = new AeronaveController();
         Aeronave expResult = null;
         Aeronave result = instance.obtenerAeronavePorId(idAeronave);
         assertEquals(expResult, result);

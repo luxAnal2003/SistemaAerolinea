@@ -26,7 +26,7 @@ public class TripulacionController {
     public String getMensaje() {
         return mensaje;
     }
-    
+
     public boolean crearTripu(Tripulacion trip) {
 
         if (!validarDatosTrip(trip)) {
@@ -184,7 +184,7 @@ public class TripulacionController {
 
         if (trip.getRol() == null
                 || trip.getRol().trim().isEmpty()
-                || trip.getRol().equalsIgnoreCase("Seleccione...")){
+                || trip.getRol().equalsIgnoreCase("Seleccione...")) {
 
             mensaje = "Debe seleccionar un rol";
             return false;
@@ -270,7 +270,7 @@ public class TripulacionController {
                 + "OR LOWER(licencia) LIKE ? "
                 + "OR cedula LIKE ?";
 
-        try (Connection con = DatabaseConnection.getConnection();PreparedStatement stmt = con.prepareStatement(sql);ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             String busquedaLike = "%" + criterio.toLowerCase(Locale.ROOT) + "%";
 
@@ -280,44 +280,161 @@ public class TripulacionController {
             stmt.setString(4, busquedaLike);
             stmt.setString(5, busquedaLike);
 
-            while (rs.next()) {
+            try (ResultSet rs = stmt.executeQuery()) {
 
-                Tripulacion trip = new Tripulacion();
+                while (rs.next()) {
 
-                trip.setIdTripulante(
-                        rs.getInt("id_tripulante")
-                );
+                    Tripulacion trip = new Tripulacion();
 
-                trip.setCedula(
-                        rs.getString("cedula")
-                );
+                    trip.setIdTripulante(rs.getInt("id_tripulante"));
+                    trip.setCedula(rs.getString("cedula"));
+                    trip.setNombre(rs.getString("nombre"));
+                    trip.setApellido(rs.getString("apellido"));
+                    trip.setRol(rs.getString("rol"));
+                    trip.setLicencia(rs.getString("licencia"));
 
-                trip.setNombre(
-                        rs.getString("nombre")
-                );
-
-                trip.setApellido(
-                        rs.getString("apellido")
-                );
-
-                trip.setRol(
-                        rs.getString("rol")
-                );
-
-                trip.setLicencia(
-                        rs.getString("licencia")
-                );
-
-                tripulacion.add(trip);
+                    tripulacion.add(trip);
+                }
             }
 
         } catch (SQLException e) {
 
-            System.err.println(
-                    "Error SQL al buscar tripulación: "
-                    + e.getMessage()
-            );
+            System.err.println("Error SQL al buscar tripulación: " + e.getMessage());
         }
+
         return tripulacion;
+    }
+
+    public Tripulacion obtenerTripulantePorId(int idAeronave) {
+        Tripulacion tripu = null;
+        String sql
+                = "SELECT * "
+                + "FROM tripulacion "
+                + "WHERE id_tripulante = ?";
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseConnection.getConnection();
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, idAeronave);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                tripu = new Tripulacion();
+                tripu.setIdTripulante(rs.getInt("id_tripulante"));
+                tripu.setNombre(rs.getString("nombre"));
+                tripu.setApellido(rs.getString("apellido"));
+                tripu.setCedula(rs.getString("cedula"));
+                tripu.setRol(rs.getString("rol"));
+                tripu.setLicencia(rs.getString("licencia"));
+                tripu.setEstado(rs.getString("estado"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error SQL al obtener aeronave por ID: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return tripu;
+    }
+
+    public String activarTripulante(int idTripulante) {
+
+        Tripulacion trip = obtenerTripulantePorId(idTripulante);
+
+        if (trip == null) {
+            return "El tripulante no existe";
+        }
+
+        if ("Activo".equalsIgnoreCase(trip.getEstado())) {
+            return "El tripulante ya está activo";
+        }
+
+        String sql = "UPDATE tripulacion SET estado='Activo' WHERE id_tripulante=?";
+
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idTripulante);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0
+                    ? "Tripulante activado correctamente."
+                    : "Error al activar el tripulante.";
+
+        } catch (SQLException e) {
+
+            return "Error al activar el tripulante: " + e.getMessage();
+        }
+    }
+
+    private boolean tripulanteAsignado(int idTripulante) {
+
+        String sql
+                = "SELECT COUNT(*) "
+                + "FROM tripulacion_vuelo "
+                + "WHERE id_tripulante=?";
+
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idTripulante);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public String desactivarTripulante(int idTripulante) {
+
+        Tripulacion trip = obtenerTripulantePorId(idTripulante);
+
+        if (trip == null) {
+            return "El tripulante no existe";
+        }
+
+        if ("Inactivo".equalsIgnoreCase(trip.getEstado())) {
+            return "El tripulante ya está inactivo";
+        }
+
+        if (tripulanteAsignado(idTripulante)) {
+            return "No se puede desactivar el tripulante porque está asignado a un vuelo.";
+        }
+
+        String sql = "UPDATE tripulacion SET estado='Inactivo' WHERE id_tripulante=?";
+
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idTripulante);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0
+                    ? "Tripulante desactivado correctamente."
+                    : "Error al desactivar el tripulante.";
+
+        } catch (SQLException e) {
+
+            return "Error al desactivar el tripulante: " + e.getMessage();
+        }
     }
 }

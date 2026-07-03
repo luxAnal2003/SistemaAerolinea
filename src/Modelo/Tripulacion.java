@@ -16,6 +16,7 @@ public class Tripulacion {
     private String apellido;
     private String rol;
     private String licencia;
+    private String estado;
 
     public Tripulacion() {
     }
@@ -25,7 +26,7 @@ public class Tripulacion {
                        String nombre,
                        String apellido,
                        String rol,
-                       String licencia) {
+                       String licencia, String estado) {
 
         this.idTripulante = idTripulante;
         this.cedula = cedula;
@@ -33,6 +34,7 @@ public class Tripulacion {
         this.apellido = apellido;
         this.rol = rol;
         this.licencia = licencia;
+        this.estado =  estado;
     }
 
     public String getApellido() {
@@ -82,5 +84,12 @@ public class Tripulacion {
     public void setCedula(String cedula) {
         this.cedula = cedula;
     }
-    
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }
