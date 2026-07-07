@@ -414,9 +414,12 @@ public class JPanelEditarTripulación extends javax.swing.JPanel {
 
         if (actualizado) {
 
+            
             JOptionPane.showMessageDialog(
-                    this,
-                    "Tripulación actualizada correctamente"
+                     this,
+                    tripuController.getMensaje(),
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
             );
 
             setear();
@@ -427,7 +430,9 @@ public class JPanelEditarTripulación extends javax.swing.JPanel {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Error al actualizar tripulación"
+                    tripuController.getMensaje(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
             );
         }
     }//GEN-LAST:event_btnActualizarActionPerformed

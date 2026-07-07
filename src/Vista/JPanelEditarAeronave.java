@@ -257,14 +257,18 @@ public class JPanelEditarAeronave extends javax.swing.JPanel {
         if (registrado) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Aeronave actualizada correctamente"
+                    aeroController.getMensaje(),
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
             );
             setear();
             cargarAeronavesEnTabla();
         } else {
             JOptionPane.showMessageDialog(
                     this,
-                    "Error al actualizar aeronave"
+                    aeroController.getMensaje(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
             );
         }
     }//GEN-LAST:event_btnActualizarActionPerformed

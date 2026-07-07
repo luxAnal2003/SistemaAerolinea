@@ -75,12 +75,25 @@ public class AeronaveController {
             System.err.println("Error: Datos de aeronave inválidos");
             return false;
         }
-        if (aeronave.getEstado().equals("Mantenimiento")) {
-            if (tieneVuelosFuturos(idAero)) {
-                System.err.println("No se puede cambiar el estado de la aeronave porque tiene "
-                        + "vuelos futuros asignados");
-                return false;
-            }
+
+        Aeronave actual = obtenerAeronavePorId(idAero);
+
+        if (actual == null) {
+            mensaje = "La aeronave no existe.";
+            return false;
+        }
+
+        String estadoAnterior = actual.getEstado();
+        String estadoNuevo = aeronave.getEstado();
+
+        boolean cambiaAEstadoRestringido
+                = !estadoAnterior.equalsIgnoreCase(estadoNuevo)
+                && ("Mantenimiento".equalsIgnoreCase(estadoNuevo)
+                || "Inactivo".equalsIgnoreCase(estadoNuevo));
+
+        if (cambiaAEstadoRestringido && tieneVuelosFuturos(idAero)) {
+            mensaje = "No se puede cambiar el estado de la aeronave porque tiene vuelos futuros asignados. Debe reasignarlos primero.";
+            return false;
         }
         String sql
                 = "UPDATE aeronaves "
@@ -93,9 +106,10 @@ public class AeronaveController {
             stmt.setInt(4, idAero);
 
             int resultado = stmt.executeUpdate();
+            mensaje = "Aeronave actualizada correctamente.";
             return resultado > 0;
         } catch (SQLException e) {
-            System.err.println("Error al actualizar aeronave: " + e.getMessage());
+            mensaje = "Error al actualizar aeronave: " + e.getMessage();
             return false;
         }
     }

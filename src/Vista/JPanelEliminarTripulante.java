@@ -4,9 +4,9 @@
  */
 package Vista;
 
-import controlador.AeronaveController;
-import Modelo.Aeronave;
+import Modelo.Tripulacion;
 import controlador.LoginController;
+import controlador.TripulacionController;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -18,15 +18,15 @@ import modelo.Cliente;
  */
 public class JPanelEliminarTripulante extends javax.swing.JPanel {
 
-    private AeronaveController aeroController;
-    private int idAero;
+    private TripulacionController tripController;
+    private int idTripulante;
 
     /**
      * Creates new form JPanelAeronave
      */
     public JPanelEliminarTripulante() {
         initComponents();
-        aeroController = new AeronaveController();
+        tripController = new TripulacionController();
         Cliente cliente = LoginController.getClienteActual();
         txtusuario.setText(
                 " " + cliente.getNombres()
@@ -37,12 +37,12 @@ public class JPanelEliminarTripulante extends javax.swing.JPanel {
             public void keyReleased(java.awt.event.KeyEvent e) {
                 String texto = txtBuscador.getText().trim();
                 if (texto.isEmpty()) {
-                    cargarAeronavesEnTabla();
+                    cargarTripulacionEnTabla();
                 }
             }
         });
 
-        this.cargarAeronavesEnTabla();
+        this.cargarTripulacionEnTabla();
     }
 
     /**
@@ -60,7 +60,7 @@ public class JPanelEliminarTripulante extends javax.swing.JPanel {
         txtBuscador = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableTripulante = new javax.swing.JTable();
+        tableTripulacion = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         btnActivar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
@@ -95,18 +95,18 @@ public class JPanelEliminarTripulante extends javax.swing.JPanel {
         });
         jPanel3.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 20, 40, 20));
 
-        tableTripulante.setModel(new javax.swing.table.DefaultTableModel(
+        tableTripulacion.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID ", "Nombre", "Apellido", "Cédula", "Rol", "Licencia"
+                "ID ", "Nombre", "Apellido", "Cédula", "Rol", "Licencia", "Estado"
             }
         ));
-        jScrollPane1.setViewportView(tableTripulante);
+        jScrollPane1.setViewportView(tableTripulacion);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 47, 520, 340));
 
@@ -196,12 +196,59 @@ public class JPanelEliminarTripulante extends javax.swing.JPanel {
     }
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        this.buscarAeronave();
+        this.buscarTripulacion();
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void buscarTripulacion() {
+
+        String criterio = txtBuscador.getText().trim();
+
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+           cargarTripulacionEnTabla();
+            return;
+        }
+
+        DefaultTableModel model = new DefaultTableModel();
+
+        model.setColumnIdentifiers(new Object[]{
+            "ID",
+            "Nombre",
+            "Apellido",
+            "Cédula",
+            "Rol",
+            "Licencia",
+            "Estado"
+        });
+
+        List<Tripulacion> lista = tripController.buscarTripulacion(criterio);
+
+        if (!lista.isEmpty()) {
+
+            for (Tripulacion t : lista) {
+
+                model.addRow(new Object[]{
+                    t.getIdTripulante(),
+                    t.getNombre(),
+                    t.getApellido(),
+                    t.getCedula(),
+                    t.getRol(),
+                    t.getLicencia(),
+                    t.getEstado()
+                });
+            }
+
+            tableTripulacion.setModel(model);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados");
+            cargarTripulacionEnTabla();
+        }
+    }
 
     private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
         if (evt.getKeyCode() == evt.VK_ENTER) {
-            this.buscarAeronave();
+            this.buscarTripulacion();
         }
     }//GEN-LAST:event_txtBuscadorKeyPressed
 
@@ -214,87 +261,76 @@ public class JPanelEliminarTripulante extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void activar() {
-        int fila = tableTripulante.getSelectedRow();
+
+        int fila = tableTripulacion.getSelectedRow();
+
         if (fila == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar");
+            JOptionPane.showMessageDialog(null,
+                    "Seleccione un tripulante para activar");
             return;
         }
-        idAero = Integer.parseInt(tableTripulante.getValueAt(fila, 0).toString());
 
-        String mensaje = aeroController.activarAero(idAero);
+        idTripulante = Integer.parseInt(
+                tableTripulacion.getValueAt(fila, 0).toString());
+
+        String mensaje = tripController.activarTripulante(idTripulante);
+
         JOptionPane.showMessageDialog(null, mensaje);
-        this.cargarAeronavesEnTabla();
+
+        cargarTripulacionEnTabla();
     }
 
     private void desactivar() {
-        int fila = tableTripulante.getSelectedRow();
+
+        int fila = tableTripulacion.getSelectedRow();
+
         if (fila == -1) {
-            JOptionPane.showMessageDialog(null,"Seleccione una aeronave para desactivar");
+            JOptionPane.showMessageDialog(null,
+                    "Seleccione un tripulante para desactivar");
             return;
         }
-        idAero = Integer.parseInt(tableTripulante.getValueAt(fila, 0).toString());
 
-        String mensaje = aeroController.desactivarAero(idAero);
+        idTripulante = Integer.parseInt(
+                tableTripulacion.getValueAt(fila, 0).toString());
+
+        String mensaje = tripController.desactivarTripulante(idTripulante);
+
         JOptionPane.showMessageDialog(null, mensaje);
-        cargarAeronavesEnTabla();
+
+        cargarTripulacionEnTabla();
     }
 
-    private void buscarAeronave() {
-        String criterio = txtBuscador.getText().trim();
-
-        if (criterio.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
-            cargarAeronavesEnTabla();
-            return;
-        }
-
-        DefaultTableModel model = new DefaultTableModel();
-        model.setColumnIdentifiers(new Object[]{"ID", "Modelo", "Capacidad", "Estado"});
-
-        List<Aeronave> aeronavesEncontradas = aeroController.buscarAeronave(criterio);
-
-        if (!aeronavesEncontradas.isEmpty()) {
-            for (Aeronave aero : aeronavesEncontradas) {
-                Object[] fila = new Object[8];
-                fila[0] = aero.getIdAeronave();
-                fila[1] = aero.getModelo();
-                fila[2] = aero.getCapacidad();
-                fila[3] = aero.getEstado();
-                model.addRow(fila);
-            }
-            tableTripulante.setModel(model);
-            jScrollPane1.setViewportView(tableTripulante);
-        } else {
-            JOptionPane.showMessageDialog(null, "No se encontraron resultados");
-            cargarAeronavesEnTabla();
-        }
-    }
-
-    private void cargarAeronavesEnTabla() {
+    private void cargarTripulacionEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(
                 new Object[]{
                     "ID",
-                    "Modelo",
-                    "Capacidad",
+                    "Nombre",
+                    "Apellido",
+                    "Cédula",
+                    "Rol",
+                    "Licencia",
                     "Estado"
                 }
         );
 
-        List<Aeronave> aeronaves
-                = aeroController.listarAeronaves();
+        List<Tripulacion> tripu
+                = tripController.listarTripulacion();
 
-        for (Aeronave a : aeronaves) {
+        for (Tripulacion t : tripu) {
 
             model.addRow(new Object[]{
-                a.getIdAeronave(),
-                a.getModelo(),
-                a.getCapacidad(),
-                a.getEstado()
+                t.getIdTripulante(),
+                t.getNombre(),
+                t.getApellido(),
+                t.getCedula(),
+                t.getRol(),
+                t.getLicencia(),
+                t.getEstado()
             });
         }
 
-        tableTripulante.setModel(model);
+        tableTripulacion.setModel(model);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -308,7 +344,7 @@ public class JPanelEliminarTripulante extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTable tableTripulante;
+    private javax.swing.JTable tableTripulacion;
     private javax.swing.JTextField txtBuscador;
     private javax.swing.JLabel txtusuario;
     // End of variables declaration//GEN-END:variables

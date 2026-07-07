@@ -30,6 +30,10 @@ CREATE TABLE tripulacion (
     licencia VARCHAR(50) UNIQUE
 ) ENGINE=InnoDB;
 
+ALTER TABLE tripulacion
+ADD COLUMN estado VARCHAR(20) NOT NULL DEFAULT 'Activo';
+
+select * from tripulacion;
 CREATE TABLE vuelos (
     id_vuelo INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(10),
@@ -150,3 +154,4 @@ VALUES
 
 
 select * from reservas;
+

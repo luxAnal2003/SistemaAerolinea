@@ -147,7 +147,7 @@ public class JPanelRegistrarAeronave extends javax.swing.JPanel {
         jPanel4.add(txtModelo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 250, 30));
         jPanel4.add(SpinCapacidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 250, 30));
 
-        cbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Activo", "Mantenimiento", " " }));
+        cbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Activo", "Mantenimiento", "Inactivo" }));
         jPanel4.add(cbxEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 250, 30));
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));

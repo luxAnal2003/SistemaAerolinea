@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,6 +34,15 @@ public class TripulacionController {
             return false;
         }
 
+        if (existeCedula(trip.getCedula(), null)) {
+            mensaje = "Ya existe un tripulante con esa cédula";
+            return false;
+        }
+
+        if (existeLicencia(trip.getLicencia(), null)) {
+            mensaje = "Ya existe un tripulante con esa licencia";
+            return false;
+        }
         String sql
                 = "INSERT INTO tripulacion "
                 + "(cedula, nombre, apellido, rol, licencia) "
@@ -60,6 +70,19 @@ public class TripulacionController {
 
     public boolean actualizarTripu(Tripulacion t) {
 
+        if (!validarDatosTrip(t)) {
+            return false;
+        }
+
+        if (existeCedula(t.getCedula(), t.getIdTripulante())) {
+            mensaje = "Ya existe otro tripulante con esa cédula";
+            return false;
+        }
+
+        if (existeLicencia(t.getLicencia(), t.getIdTripulante())) {
+            mensaje = "Ya existe otro tripulante con esa licencia";
+            return false;
+        }
         String sql = "UPDATE tripulacion "
                 + "SET nombre=?, apellido=?, cedula=?, licencia=?, rol=? "
                 + "WHERE id_tripulante=?";
@@ -75,12 +98,11 @@ public class TripulacionController {
 
             ps.setInt(6, t.getIdTripulante());
 
+            mensaje = "Tripulación actualizada correctamente";
             return ps.executeUpdate() > 0;
-
         } catch (SQLException e) {
-
-            System.out.println("Error actualizar: " + e.getMessage());
-
+            e.printStackTrace();
+            mensaje = "Error al actualizar tripulación: " + e.getMessage();
             return false;
         }
     }
@@ -152,11 +174,6 @@ public class TripulacionController {
             return false;
         }
 
-        if (existeCedula(trip.getCedula())) {
-            mensaje = "Ya existe un tripulante con esa cédula";
-            return false;
-        }
-
         if (trip.getLicencia() == null || trip.getLicencia().trim().isEmpty()) {
             mensaje = "La licencia es obligatoria";
             return false;
@@ -177,11 +194,6 @@ public class TripulacionController {
             return false;
         }
 
-        if (existeLicencia(trip.getLicencia())) {
-            mensaje = "Ya existe un tripulante con esa licencia";
-            return false;
-        }
-
         if (trip.getRol() == null
                 || trip.getRol().trim().isEmpty()
                 || trip.getRol().equalsIgnoreCase("Seleccione...")) {
@@ -194,36 +206,60 @@ public class TripulacionController {
         return true;
     }
 
-    private boolean existeCedula(String cedula) {
-        String sql
-                = "SELECT id_tripulante "
-                + "FROM tripulacion "
-                + "WHERE cedula = ?";
+    private boolean existeCedula(String cedula, Integer idExcluir) {
+
+        String sql;
+
+        if (idExcluir == null) {
+            sql = "SELECT id_tripulante FROM tripulacion WHERE cedula = ?";
+        } else {
+            sql = "SELECT id_tripulante FROM tripulacion "
+                    + "WHERE cedula = ? AND id_tripulante <> ?";
+        }
+
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
+
             stmt.setString(1, cedula);
+
+            if (idExcluir != null) {
+                stmt.setInt(2, idExcluir);
+            }
+
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
+
         } catch (SQLException e) {
             System.err.println("Error al verificar cédula: " + e.getMessage());
-
             return false;
         }
     }
+    
+    private boolean existeLicencia(String licencia, Integer idExcluir) {
 
-    private boolean existeLicencia(String licencia) {
-        String sql
-                = "SELECT id_tripulante "
-                + "FROM tripulacion "
-                + "WHERE licencia = ?";
+        String sql;
+
+        if (idExcluir == null) {
+            sql = "SELECT id_tripulante FROM tripulacion WHERE licencia = ?";
+        } else {
+            sql = "SELECT id_tripulante FROM tripulacion "
+                    + "WHERE licencia = ? AND id_tripulante <> ?";
+        }
+
         try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
+
             stmt.setString(1, licencia);
+
+            if (idExcluir != null) {
+                stmt.setInt(2, idExcluir);
+            }
+
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
+
         } catch (SQLException e) {
             System.err.println("Error al verificar licencia: " + e.getMessage());
-
             return false;
         }
     }
@@ -253,6 +289,7 @@ public class TripulacionController {
         t.setCedula(rs.getString("cedula"));
         t.setRol(rs.getString("rol"));
         t.setLicencia(rs.getString("licencia"));
+        t.setEstado(rs.getString("estado"));
 
         return t;
     }
@@ -262,12 +299,13 @@ public class TripulacionController {
         List<Tripulacion> tripulacion = new ArrayList<>();
 
         String sql
-                = "SELECT id_tripulante, cedula, nombre, apellido, rol, licencia "
+                = "SELECT id_tripulante, cedula, nombre, apellido, rol, licencia, estado "
                 + "FROM tripulacion "
                 + "WHERE LOWER(nombre) LIKE ? "
                 + "OR LOWER(apellido) LIKE ? "
                 + "OR LOWER(rol) LIKE ? "
                 + "OR LOWER(licencia) LIKE ? "
+                + "OR LOWER(estado) LIKE ? "
                 + "OR cedula LIKE ?";
 
         try (Connection con = DatabaseConnection.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -279,6 +317,7 @@ public class TripulacionController {
             stmt.setString(3, busquedaLike);
             stmt.setString(4, busquedaLike);
             stmt.setString(5, busquedaLike);
+            stmt.setString(6, busquedaLike);
 
             try (ResultSet rs = stmt.executeQuery()) {
 
@@ -292,6 +331,7 @@ public class TripulacionController {
                     trip.setApellido(rs.getString("apellido"));
                     trip.setRol(rs.getString("rol"));
                     trip.setLicencia(rs.getString("licencia"));
+                    trip.setEstado(rs.getString("estado"));
 
                     tripulacion.add(trip);
                 }
@@ -383,7 +423,7 @@ public class TripulacionController {
 
         String sql
                 = "SELECT COUNT(*) "
-                + "FROM tripulacion_vuelo "
+                + "FROM vuelo_tripulacion "
                 + "WHERE id_tripulante=?";
 
         try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
