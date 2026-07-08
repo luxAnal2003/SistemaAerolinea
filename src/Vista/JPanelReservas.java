@@ -662,6 +662,15 @@ public class JPanelReservas extends javax.swing.JPanel {
 
             int idReserva = reservaController.crearReserva(r);
 
+            if (idReserva == -2) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Asiento no disponible"
+                );
+
+                return;
+            }
             if (idReserva > 0) {
 
                 String asientoTitular = asientos.get(0);
@@ -677,10 +686,25 @@ public class JPanelReservas extends javax.swing.JPanel {
 
                     String asiento = asientos.get(i + 1);
 
-                    reservaController.actualizarAsientoPasajero(
-                            p.getIdentificacion(),
+                    boolean registrado = reservaController.guardarPasajero(
+                            p,
+                            cliente.getId(),
+                            vueloSeleccionado.getIdVuelo(),
+                            idReserva,
                             asiento
                     );
+
+                    if (!registrado) {
+
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Error guardando pasajero: "
+                                + p.getNombre()
+                        );
+
+                        return;
+                    }
+
                 }
 
                 JOptionPane.showMessageDialog(
@@ -738,50 +762,55 @@ public class JPanelReservas extends javax.swing.JPanel {
             return;
         }
 
-        if (!fechaNacimiento.matches("\\d{4}-\\d{2}-\\d{2}")) {
+        PasajeroExtra p = new PasajeroExtra();
+
+        String fecha = fechaNacimiento;
+
+        if (!fecha.matches("\\d{4}-\\d{2}-\\d{2}")) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "La fecha debe tener formato YYYY-MM-DD\nEjemplo: 2000-05-14"
+                    "Fecha incorrecta. Use formato YYYY-MM-DD"
             );
+
             return;
         }
-        PasajeroExtra p = new PasajeroExtra();
+
+        try {
+
+            java.sql.Date.valueOf(fecha);
+
+        } catch (IllegalArgumentException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "La fecha ingresada no es válida"
+            );
+
+            return;
+        }
 
         p.setNombre(nombres);
         p.setIdentificacion(cedula);
-        p.setFechaNacimiento(fechaNacimiento);
+        p.setFechaNacimiento(fecha);
 
-        boolean registrado = reservaController.guardarPasajero(
-                p,
-                cliente.getId(),
-                vueloSeleccionado.getIdVuelo()
+        pasajeros.add(p);
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Pasajero añadido correctamente"
         );
 
-        if (registrado) {
-            pasajeros.add(p);
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Pasajero añadido correctamente"
-            );
+        cantidadPasajeros = pasajeros.size() + 1;
 
-            cantidadPasajeros = pasajeros.size() + 1;
+        txtNumeroPasajeros.setText(
+                String.valueOf(cantidadPasajeros)
+        );
 
-            txtNumeroPasajeros.setText(
-                    String.valueOf(cantidadPasajeros)
-            );
+        calcularTotal();
 
-            calcularTotal();
+        setear();
 
-            setear();
-
-        } else {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error al registrar pasajero"
-            );
-        }
     }//GEN-LAST:event_btnAniadirPasajeroActionPerformed
 
     private void setear() {
@@ -809,6 +838,7 @@ public class JPanelReservas extends javax.swing.JPanel {
             txtTotalPagar.setText("0.00");
         }
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAniadirPasajero;

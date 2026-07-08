@@ -15,17 +15,27 @@ public class PasajeroExtra {
     private String identificacion;
     private String fechaNacimiento;
     private String asiento;
+    private String tipo;
 
     
     public PasajeroExtra() {}
     
-    public PasajeroExtra(int id, int idReserva, String nombre, String identificacion, String fechaNacimiento, String asiento) {
+    public PasajeroExtra(int id, int idReserva, String nombre, String identificacion, String fechaNacimiento, String asiento,String tipo) {
         this.id = id;
         this.idReserva = idReserva;
         this.nombre = nombre;
         this.identificacion = identificacion;
         this.fechaNacimiento = fechaNacimiento;
         this.asiento = asiento;
+        this.tipo = tipo;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
 

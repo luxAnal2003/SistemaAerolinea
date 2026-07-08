@@ -7,62 +7,69 @@ package controlador;
 import Modelo.Aeronave;
 import Modelo.Tripulacion;
 import utils.DatabaseConnection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 import modelo.Vuelo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
  * @author admin
  */
 public class VueloTripulacionController {
-    
-    public boolean guardarAsignacion(
-        Vuelo vuelo,
-        Tripulacion piloto,
-        Tripulacion copiloto,
-        List<Tripulacion> asistentes
-) {
+    public boolean guardarAsignacion(Vuelo vuelo,Tripulacion piloto,Tripulacion copiloto, List<Tripulacion> asistentes) {
+        String sql = "INSERT INTO vuelo_tripulacion "
+                + "(id_vuelo,id_tripulante) "
+                + "VALUES (?,?)";
+        Connection con = null;
 
-    String sql = "INSERT INTO vuelo_tripulacion "
-            + "(id_vuelo, id_tripulante) "
-            + "VALUES (?, ?)";
+        try {
+            con = DatabaseConnection.getConnection();
+            con.setAutoCommit(false);
 
-    try (
-            java.sql.Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql)
-    ) {
-
-        ps.setInt(1, vuelo.getIdVuelo());
-        ps.setInt(2, piloto.getIdTripulante());
-        ps.executeUpdate();
-
-        ps.setInt(1, vuelo.getIdVuelo());
-        ps.setInt(2, copiloto.getIdTripulante());
-        ps.executeUpdate();
-
-        for (Tripulacion t : asistentes) {
+            PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setInt(1, vuelo.getIdVuelo());
-            ps.setInt(2, t.getIdTripulante());
-
+            ps.setInt(2, piloto.getIdTripulante());
             ps.executeUpdate();
+
+            ps.setInt(1, vuelo.getIdVuelo());
+            ps.setInt(2, copiloto.getIdTripulante());
+            ps.executeUpdate();
+
+            for (Tripulacion t : asistentes) {
+                ps.setInt(1, vuelo.getIdVuelo());
+                ps.setInt(2, t.getIdTripulante());
+                ps.executeUpdate();
+            }
+            con.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                if (con != null) {
+                    con.rollback();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            System.out.println(e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-        return true;
-
-    } catch (SQLException e) {
-
-        System.out.println(
-                "Error guardando asignación: "
-                + e.getMessage()
-        );
-
-        return false;
     }
-}
+
     public String validarAsignacion(
+            Vuelo vuelo,
             Aeronave aeronave,
             Tripulacion piloto,
             Tripulacion copiloto,
@@ -73,6 +80,10 @@ public class VueloTripulacionController {
             return "Seleccione una aeronave";
         }
 
+        if (vuelo == null) {
+            return "Debe seleccionar un vuelo";
+        }
+        
         if (piloto == null) {
             return "Debe seleccionar un piloto";
         }
@@ -93,7 +104,40 @@ public class VueloTripulacionController {
             return "La aeronave está en mantenimiento";
         }
 
+        if (!aeronave.getEstado().equalsIgnoreCase("Activo")) {
+            return "La aeronave no se encuentra activa.";
+        }
+
+        if (vueloYaTieneTripulacion(vuelo.getIdVuelo())) {
+            return "Este vuelo ya tiene una tripulación asignada.";
+        }
         return null;
+    }
+
+
+    private boolean vueloYaTieneTripulacion(int idVuelo) {
+
+        String sql
+                = "SELECT COUNT(*) "
+                + "FROM vuelo_tripulacion "
+                + "WHERE id_vuelo=?";
+
+        try (
+                java.sql.Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+
+            ps.setInt(1, idVuelo);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
     }
 
     public String generarResumen(

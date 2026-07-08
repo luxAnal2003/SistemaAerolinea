@@ -375,6 +375,10 @@ public class AeronaveController {
             return "La aeronave ya está inactiva";
         }
 
+        if (tieneVuelosFuturos(idAeronave)) {
+            return "No se puede desactivar la aeronave porque tiene vuelos futuros asignados.";
+        }
+        
         String sql = "UPDATE aeronaves SET estado = 'Inactivo' WHERE id_aeronave = ?";
 
         try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {

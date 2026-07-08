@@ -59,4 +59,22 @@ public class JPanelAsientos extends JPanel {
             }
         }
     }
+
+    public void seleccionarAsiento(String asiento) {
+
+        for (JToggleButton b : botones) {
+
+            if (b.getText().equals(asiento)) {
+
+                b.setSelected(true);
+
+            } else {
+
+                b.setSelected(false);
+
+            }
+
+        }
+
+    }
 }

@@ -188,12 +188,6 @@ public class JPanelEliminarAeronave extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void setear() {
-//        txtModelo.setText("");
-//        SpinCapacidad.setValue(0);
-//        cbxEstado.setSelectedIndex(0);
-//        idAero = 0;
-    }
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         this.buscarAeronave();

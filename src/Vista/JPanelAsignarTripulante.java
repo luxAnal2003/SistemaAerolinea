@@ -626,6 +626,7 @@ public class JPanelAsignarTripulante extends javax.swing.JPanel {
 
         String validacion
                 = asignacionController.validarAsignacion(
+                        vuelo,
                         aeronave,
                         piloto,
                         copiloto,

@@ -22,8 +22,6 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
     public FrmPagePrincipal() {
         initComponents();
         setLocationRelativeTo(null);
-        JPanelReservas reser = new JPanelReservas();
-        showPanel(reser);
     }
 
     /**
@@ -44,6 +42,10 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         btnRegresar = new javax.swing.JButton();
         btnCerrarSesion = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnRegistrar1 = new javax.swing.JButton();
+        btnConsultar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         content = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -94,6 +96,58 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
         });
         jPanel1.add(btnCerrarSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 440, 120, 30));
 
+        btnEliminar.setBackground(new java.awt.Color(0, 51, 102));
+        btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnEliminar.setText("Eliminar reserva");
+        btnEliminar.setBorder(null);
+        btnEliminar.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 120, -1));
+
+        btnRegistrar1.setBackground(new java.awt.Color(0, 51, 102));
+        btnRegistrar1.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegistrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnRegistrar1.setText("Reservar");
+        btnRegistrar1.setBorder(null);
+        btnRegistrar1.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnRegistrar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrar1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnRegistrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 120, -1));
+
+        btnConsultar.setBackground(new java.awt.Color(0, 51, 102));
+        btnConsultar.setForeground(new java.awt.Color(255, 255, 255));
+        btnConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnConsultar.setText("Consultar");
+        btnConsultar.setBorder(null);
+        btnConsultar.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnConsultar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 120, -1));
+
+        btnEditar.setBackground(new java.awt.Color(0, 51, 102));
+        btnEditar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/dashboard.png"))); // NOI18N
+        btnEditar.setText("Editar reserva");
+        btnEditar.setBorder(null);
+        btnEditar.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 120, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 160, 490));
 
         content.setBackground(new java.awt.Color(225, 238, 250));
@@ -139,6 +193,26 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         this.cerrarSesion();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        JPanelEliminarReservas ElimReser = new JPanelEliminarReservas();
+        showPanel(ElimReser);
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnRegistrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrar1ActionPerformed
+        JPanelReservas reser = new JPanelReservas();
+        showPanel(reser);
+    }//GEN-LAST:event_btnRegistrar1ActionPerformed
+
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        JPanelConsultarReservas consulReser = new JPanelConsultarReservas();
+        showPanel(consulReser);
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        JPanelEditarReservas EditReser = new JPanelEditarReservas();
+        showPanel(EditReser);
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     private void showPanel(JPanel p){
         p.setSize(857, 492);
@@ -197,6 +271,10 @@ public class FrmPagePrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrarSesion;
+    private javax.swing.JButton btnConsultar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnRegistrar1;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JPanel content;
     private javax.swing.JLabel jLabel1;
