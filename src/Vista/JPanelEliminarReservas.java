@@ -60,7 +60,6 @@ public class JPanelEliminarReservas extends javax.swing.JPanel {
         txtBuscador = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
-        btnActivar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableReservas = new javax.swing.JTable();
 
@@ -94,7 +93,7 @@ public class JPanelEliminarReservas extends javax.swing.JPanel {
                 txtBuscadorKeyPressed(evt);
             }
         });
-        jPanel3.add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 20, 310, 20));
+        jPanel3.add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 20, 470, 20));
 
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/search.png"))); // NOI18N
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -102,7 +101,7 @@ public class JPanelEliminarReservas extends javax.swing.JPanel {
                 btnBuscarActionPerformed(evt);
             }
         });
-        jPanel3.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 20, 40, 20));
+        jPanel3.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 20, 40, 20));
 
         btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/power-on.png"))); // NOI18N
@@ -112,27 +111,17 @@ public class JPanelEliminarReservas extends javax.swing.JPanel {
                 btnEliminarActionPerformed(evt);
             }
         });
-        jPanel3.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 10, 140, 30));
-
-        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/power-button.png"))); // NOI18N
-        btnActivar.setText("   Activar");
-        btnActivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActivarActionPerformed(evt);
-            }
-        });
-        jPanel3.add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 10, 140, 30));
+        jPanel3.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 10, 140, 30));
 
         tableReservas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Reserva", "Ruta", "Fecha", "Pasajeros", "Total", "Estado", "Asiento"
+                "Reserva", "Ruta", "Fecha", "Pasajeros", "Total", "Estado"
             }
         ));
         jScrollPane2.setViewportView(tableReservas);
@@ -177,88 +166,61 @@ public class JPanelEliminarReservas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mostrarReservas(List<Reserva> lista) {
-
-    if (modeloTabla == null) {
-
-        modeloTabla = new DefaultTableModel();
-
-        modeloTabla.setColumnIdentifiers(new Object[]{
-            "Reserva",
-            "Ruta",
-            "Fecha",
-            "Pasajeros",
-            "Total",
-            "Estado",
-            "Asiento"
-        });
-
-        tableReservas.setModel(modeloTabla);
+        if (modeloTabla == null) {
+            modeloTabla = new DefaultTableModel();
+            modeloTabla.setColumnIdentifiers(new Object[]{
+                "Reserva",
+                "Ruta",
+                "Fecha",
+                "Pasajeros",
+                "Total",
+                "Estado"
+            });
+            tableReservas.setModel(modeloTabla);
+        }
+        modeloTabla.setRowCount(0);
+        for (Reserva r : lista) {
+            modeloTabla.addRow(new Object[]{
+                r.getIdReserva(),
+                r.getRuta(),
+                r.getFechaReserva(),
+                r.getCantidadPasajeros(),
+                r.getTotal(),
+                r.getEstado()
+            });
+        }
     }
 
-    modeloTabla.setRowCount(0);
-
-    for (Reserva r : lista) {
-
-        modeloTabla.addRow(new Object[]{
-            r.getIdReserva(),
-            r.getRuta(),
-            r.getFechaReserva(),
-            r.getCantidadPasajeros(),
-            r.getTotal(),
-            r.getEstado(),
-            r.getAsiento()
-        });
-    }
-}
-   private void cargarReservas() {
-
-    if (modeloTabla == null) {
-
-        modeloTabla = new DefaultTableModel();
-
-        modeloTabla.setColumnIdentifiers(new Object[]{
-            "Reserva",
-            "Ruta",
-            "Fecha",
-            "Pasajeros",
-            "Total",
-            "Estado",
-            "Asiento"
-        });
-
-        tableReservas.setModel(modeloTabla);
+    private void cargarReservas() {
+        if (modeloTabla == null) {
+            modeloTabla = new DefaultTableModel();
+            modeloTabla.setColumnIdentifiers(new Object[]{
+                "Reserva",
+                "Ruta",
+                "Fecha",
+                "Pasajeros",
+                "Total",
+                "Estado"
+            });
+            tableReservas.setModel(modeloTabla);
+        }
+        mostrarReservas(
+                reservaController.listarReservas(cliente.getId())
+        );
     }
 
-    mostrarReservas(
-            reservaController.listarReservas(cliente.getId())
-    );
-}
     private void buscarReserva() {
-
         String criterio = txtBuscador.getText().trim();
-
         if (criterio.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Ingrese un criterio de búsqueda"
-            );
-
+            JOptionPane.showMessageDialog(this,"Ingrese un criterio de búsqueda");
             return;
         }
 
         List<Reserva> lista = reservaController.buscarReservas(cliente.getId(), criterio);
-
         if (lista.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No se encontraron resultados"
-            );
-
+            JOptionPane.showMessageDialog(this,"No se encontraron resultados");
             return;
         }
-
         mostrarReservas(lista);
 
     }
@@ -275,50 +237,22 @@ public class JPanelEliminarReservas extends javax.swing.JPanel {
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         this.desactivar();
     }//GEN-LAST:event_btnEliminarActionPerformed
+    private void desactivar() {
+        int fila = tableReservas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this,"Seleccione una reserva");
+            return;
+        }
+        int idReserva = Integer.parseInt(tableReservas.getValueAt(fila, 0).toString());
 
-    private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
-        this.activar();
-    }//GEN-LAST:event_btnActivarActionPerformed
-private void desactivar() {
+        String mensaje = reservaController.desactivarReserva(idReserva);
 
-    int fila = tableReservas.getSelectedRow();
+        JOptionPane.showMessageDialog(this, mensaje);
 
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(this,
-                "Seleccione una reserva");
-        return;
+        cargarReservas();
     }
 
-    int idReserva = Integer.parseInt(
-            tableReservas.getValueAt(fila, 0).toString());
-
-    String mensaje = reservaController.desactivarReserva(idReserva);
-
-    JOptionPane.showMessageDialog(this, mensaje);
-
-    cargarReservas();
-}
-private void activar() {
-
-    int fila = tableReservas.getSelectedRow();
-
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(this,
-                "Seleccione una reserva");
-        return;
-    }
-
-    int idReserva = Integer.parseInt(
-            tableReservas.getValueAt(fila, 0).toString());
-
-    String mensaje = reservaController.activarReserva(idReserva);
-
-    JOptionPane.showMessageDialog(this, mensaje);
-
-    cargarReservas();
-}
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActivar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.ButtonGroup buttonGroup1;

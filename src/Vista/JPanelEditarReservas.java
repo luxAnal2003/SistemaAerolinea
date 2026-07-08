@@ -43,63 +43,55 @@ public class JPanelEditarReservas extends javax.swing.JPanel {
         jPaneAsientos.setLayout(new BorderLayout());
         jPaneAsientos.add(panelAsientos, BorderLayout.CENTER);
 
-        tableReservas.getSelectionModel()
-                .addListSelectionListener(e -> {
-
-                    if (!e.getValueIsAdjusting()) {
-
-                        int fila
-                                = tableReservas.getSelectedRow();
-
-                        if (fila != -1) {
-
-                            int idReserva
-                                    = Integer.parseInt(
-                                            tableReservas.getValueAt(fila, 0).toString()
-                                    );
-
-                            idReservaSeleccionada = idReserva;
-                            cargarPasajeros(idReserva);
-
-                        }
-
+        tableReservas.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int fila = tableReservas.getSelectedRow();
+                if (fila != -1) {
+                    int idReserva = Integer.parseInt(tableReservas.getValueAt(fila, 0).toString());
+                    if (reservaController.reservaCancelada(idReserva)) {
+                        JOptionPane.showMessageDialog(this,"La reserva está cancelada y no puede modificarse.");
+                        tablePasajeros.setModel(new DefaultTableModel());
+                        panelAsientos.limpiarSeleccion();
+                        pasajeroSeleccionado = null;
+                        asientoActual = null;
+                        return;
                     }
+                    idReservaSeleccionada = idReserva;
+                    if (reservaController.reservaCancelada(idReserva)) {
+                        JOptionPane.showMessageDialog(this,"La reserva está cancelada y no puede modificarse.");
 
-                });
-        tablePasajeros.getSelectionModel()
-                .addListSelectionListener(e -> {
+                        DefaultTableModel modelo = new DefaultTableModel();
+                        modelo.setColumnIdentifiers(new Object[]{"Pasajero", "Asiento"});
+                        tablePasajeros.setModel(modelo);
 
-                    if (!e.getValueIsAdjusting()) {
-
-                        int fila
-                                = tablePasajeros.getSelectedRow();
-
-                        if (fila != -1) {
-
-                            PasajeroExtra p = pasajeros.get(fila);
-
-                            pasajeroSeleccionado = p.getIdentificacion();
-
-                            asientoActual = p.getAsiento();
-
-                            esTitular = p.getTipo().equals("TITULAR");
-
-                            panelAsientos.seleccionarAsiento(asientoActual);
-
-                        }
-
+                        panelAsientos.limpiarSeleccion();
+                        btnActualizar.setEnabled(false);
+                        return;
                     }
-
-                });
+                    btnActualizar.setEnabled(true);
+                    panelAsientos.limpiarSeleccion();
+                    cargarPasajeros(idReserva);
+                }
+            }
+        });
+        tablePasajeros.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int fila = tablePasajeros.getSelectedRow();
+                if (fila != -1) {
+                    PasajeroExtra p = pasajeros.get(fila);
+                    pasajeroSeleccionado = p.getIdentificacion();
+                    asientoActual = p.getAsiento();
+                    esTitular = p.getTipo().equals("TITULAR");
+                    panelAsientos.seleccionarAsiento(asientoActual);
+                }
+            }
+        });
         cargarReservas();
         txtBuscador.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-
             private void actualizar() {
-
                 if (txtBuscador.getText().trim().isEmpty()) {
                     cargarReservas();
                 }
-
             }
 
             @Override
@@ -120,41 +112,29 @@ public class JPanelEditarReservas extends javax.swing.JPanel {
     }
 
     private void cargarPasajeros(int idReserva) {
-
-        DefaultTableModel modelo
-                = new DefaultTableModel();
-
+        DefaultTableModel modelo = new DefaultTableModel();
         modelo.setColumnIdentifiers(
                 new Object[]{
                     "Pasajero",
                     "Asiento"
                 }
         );
-
-        pasajeros
-                = reservaController.obtenerPasajerosReserva(idReserva);
+        pasajeros = reservaController.obtenerPasajerosReserva(idReserva);
 
         for (PasajeroExtra p : pasajeros) {
-
             modelo.addRow(
                     new Object[]{
                         p.getNombre(),
                         p.getAsiento()
                     }
             );
-
         }
-
         tablePasajeros.setModel(modelo);
-
     }
 
     private void mostrarReservas(List<Reserva> lista) {
-
         modeloTabla.setRowCount(0);
-
         for (Reserva r : lista) {
-
             modeloTabla.addRow(new Object[]{
                 r.getIdReserva(),
                 r.getRuta(),
@@ -164,16 +144,12 @@ public class JPanelEditarReservas extends javax.swing.JPanel {
                 r.getEstado(),
                 r.getAsiento()
             });
-
         }
-
     }
 
     private void cargarReservas() {
         if (modeloTabla == null) {
-
             modeloTabla = new DefaultTableModel();
-
             modeloTabla.setColumnIdentifiers(new Object[]{
                 "Reserva",
                 "Ruta",
@@ -183,10 +159,8 @@ public class JPanelEditarReservas extends javax.swing.JPanel {
                 "Estado",
                 "Asiento"
             });
-
             tableReservas.setModel(modeloTabla);
         }
-
         mostrarReservas(reservaController.listarReservas(cliente.getId()));
     }
 
@@ -367,95 +341,60 @@ public class JPanelEditarReservas extends javax.swing.JPanel {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
 
-        if (pasajeroSeleccionado == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un pasajero"
-            );
-
+        if (reservaController.reservaCancelada(idReservaSeleccionada)) {
+            JOptionPane.showMessageDialog(this,"No es posible modificar una reserva cancelada.");
             return;
-
         }
 
-        List<String> seleccionados
-                = panelAsientos.getAsientosSeleccionados();
+        if (pasajeroSeleccionado == null) {
+            JOptionPane.showMessageDialog(this,"Seleccione un pasajero" );
+            return;
+        }
+
+        List<String> seleccionados = panelAsientos.getAsientosSeleccionados();
 
         if (seleccionados.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un asiento"
-            );
-
+            JOptionPane.showMessageDialog(this,"Seleccione un asiento");
             return;
-
         }
 
-        String nuevoAsiento
-                = seleccionados.get(0);
+        if (seleccionados.size() > 1) {
+            JOptionPane.showMessageDialog(this,"Solo puede modificar el asiento de un pasajero a la vez.");
+            return;
+        }
+
+        String nuevoAsiento = seleccionados.get(0);
 
         String respuesta;
 
         if (esTitular) {
-
-            respuesta
-                    = reservaController.cambiarAsientoTitular(
-                            idReservaSeleccionada,
-                            nuevoAsiento
-                    );
-
+            respuesta= reservaController.cambiarAsientoTitular(idReservaSeleccionada, nuevoAsiento);
         } else {
-
-            respuesta
-                    = reservaController.cambiarAsientoPasajero(
-                            pasajeroSeleccionado,
-                            nuevoAsiento
-                    );
-
+            respuesta= reservaController.cambiarAsientoPasajero(pasajeroSeleccionado, nuevoAsiento);
         }
 
-        JOptionPane.showMessageDialog(
-                this,
-                respuesta
-        );
+        JOptionPane.showMessageDialog(this,respuesta);
         if (respuesta.equals(
                 "Asiento actualizado correctamente")) {
-
             cargarReservas();
-
             cargarPasajeros(idReservaSeleccionada);
-
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void buscarReserva() {
-
         String criterio = txtBuscador.getText().trim();
-
         if (criterio.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Ingrese un criterio de búsqueda"
-            );
-
+            JOptionPane.showMessageDialog(this,"Ingrese un criterio de búsqueda");
             return;
         }
 
         List<Reserva> lista = reservaController.buscarReservas(cliente.getId(), criterio);
 
         if (lista.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No se encontraron resultados"
-            );
-
+            JOptionPane.showMessageDialog(this,"No se encontraron resultados");
             return;
         }
         mostrarReservas(lista);
-
     }
 
     private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed

@@ -71,14 +71,19 @@ VALUES
 
 INSERT INTO tripulacion (cedula, nombre, apellido, rol, licencia)
 VALUES
-('0911111111', 'Carlos', 'Mendoza', 'Piloto', 'LIC-PIL-001'),
-('0922222222', 'Luis', 'Torres', 'Copiloto', 'LIC-COP-002'),
-('0933333333', 'Ana', 'Pérez', 'Asistente', 'LIC-ASI-003'),
-('0944444444', 'José', 'Ramírez', 'Asistente', 'LIC-ASI-004'),
-('1234567867', 'Eddy', 'Pérez', 'Asistente', 'LIC-ASI-005'),
-('3456342343', 'Marcos', 'Ramírez', 'Asistente', 'LIC-ASI-006'),
-('3476894523', 'Steff', 'Pérez', 'Asistente', 'LIC-ASI-007'),
-('1235278457', 'July', 'Ramírez', 'Asistente', 'LIC-ASI-008');
+('0911111111', 'Carlos', 'Mendoza', 'Piloto', 'LICPIL001'),
+('0922222222', 'Luis', 'Torres', 'Copiloto', 'LICCOP002'),
+('0933333333', 'Ana', 'Pérez', 'Asistente', 'LICASI003'),
+('0944444444', 'José', 'Ramírez', 'Asistente', 'LICASI004'),
+('1234567867', 'Eddy', 'Pérez', 'Asistente', 'LICASI005'),
+('3456342343', 'Marcos', 'Ramírez', 'Asistente', 'LICASI006'),
+('3476894523', 'Steff', 'Pérez', 'Asistente', 'LIcASI007'),
+('1235278457', 'July', 'Ramírez', 'Asistente', 'LICASI008'),
+('3456342346', 'nuevoa', 'Ramírez', 'Asistente', 'LICASI009'),
+('3476894525', 'nuevob', 'Pérez', 'Asistente', 'LICASI010'),
+('1235278454', 'nuevoc', 'Ramírez', 'Asistente', 'LICASI011'),
+('3476894529', 'nuevod', 'Pérez', 'Asistente', 'LICASI012'),
+('1235278451', 'nuevoe', 'Ramírez', 'Asistente', 'LICASI013');
 
 INSERT INTO vuelos (
     codigo, aerolinea, origen, destino,
@@ -121,10 +126,18 @@ CREATE TABLE reservas (
     FOREIGN KEY (id_vuelos) REFERENCES vuelos(id_vuelo)
 );
 
+ALTER TABLE reservas
+MODIFY estado ENUM(
+'Reservado',
+'Pagado',
+'Cancelado'
+) DEFAULT 'Reservado';
+
 CREATE TABLE pasajeros_extra (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
     id_vuelo INT NOT NULL,
+    id_reserva INT NOT NULL,
 
     nombre VARCHAR(100),
     identificacion VARCHAR(15),
@@ -132,7 +145,10 @@ CREATE TABLE pasajeros_extra (
     asiento VARCHAR(10),
 
     FOREIGN KEY (id_cliente) REFERENCES clientes(id),
-    FOREIGN KEY (id_vuelo) REFERENCES vuelos(id_vuelo)
+    FOREIGN KEY (id_vuelo) REFERENCES vuelos(id_vuelo),
+    FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva),
+
+    UNIQUE(id_vuelo, asiento)
 );
 
 INSERT INTO reservas (
@@ -140,18 +156,24 @@ INSERT INTO reservas (
     precio_total, fecha_reserva, estado, asiento
 )
 VALUES
-(1, 1, 2, 241.00, '2026-05-10', 'Confirmada','3A'),
-(2, 2, 1, 90.00, '2026-05-11', 'Pendiente', '3A');
+(1, 1, 2, 241.00, '2026-05-10', 'Reservado','3A'),
+(2, 2, 1, 90.00, '2026-05-11', 'Reservado', '3A');
 
 INSERT INTO pasajeros_extra (
-    id_cliente, id_vuelo, nombre,
-    identificacion, fecha_nacimiento, asiento
+    id_reserva,
+    id_cliente,
+    id_vuelo,
+    nombre,
+    identificacion,
+    fecha_nacimiento,
+    asiento
 )
 VALUES
-(1, 1, 'Daniel Ríos', '1234567890', '1998-05-10', '1A'),
-(1, 1, 'Laura Vega', '1112223334', '2000-08-15', '1B'),
-(2, 2, 'María Gómez', '0987654321', '1995-03-20', '2A');
+(1, 1, 1, 'Laura Vega', '1112223334', '2000-08-15', '1B'),
+(2, 2, 2, 'María Gómez', '0987654321', '1995-03-20', '2A');
 
 
+select * from pasajeros_extra;
 select * from reservas;
+
 

@@ -17,6 +17,8 @@ import javax.swing.table.DefaultTableModel;
 import modelo.Cliente;
 import modelo.Vuelo;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -73,7 +75,6 @@ public class JPanelReservas extends javax.swing.JPanel {
     }
 
     private void cargarCombos() {
-
         cargandoCombos = true;
 
         cbxOrigen.removeAllItems();
@@ -100,7 +101,6 @@ public class JPanelReservas extends javax.swing.JPanel {
     }
 
     private void eventosCombos() {
-
         cbxOrigen.addActionListener(e -> {
             if (!cargandoCombos) {
                 filtrarVuelos();
@@ -121,20 +121,15 @@ public class JPanelReservas extends javax.swing.JPanel {
     }
 
     private void filtrarVuelos() {
-
         String origen = cbxOrigen.getSelectedItem().toString();
         String destino = cbxDestino.getSelectedItem().toString();
         String fecha = cbxFecha.getSelectedItem().toString();
 
-        List<Vuelo> lista = vueloController.filtrarVuelosFlex(
-                origen, destino, fecha
-        );
+        List<Vuelo> lista = vueloController.filtrarVuelosFlex(origen, destino, fecha);
 
         if (lista.isEmpty()) {
             ((DefaultTableModel) tableVuelos.getModel()).setRowCount(0);
-
-            JOptionPane.showMessageDialog(this,
-                    "No hay vuelos con esos filtros");
+            JOptionPane.showMessageDialog(this, "No hay vuelos con esos filtros");
         } else {
             cargarTablaVuelos(lista);
         }
@@ -142,8 +137,7 @@ public class JPanelReservas extends javax.swing.JPanel {
 
     private void cargarTablaVuelos(List<Vuelo> lista) {
 
-        DefaultTableModel modelo
-                = new DefaultTableModel();
+        DefaultTableModel modelo = new DefaultTableModel();
 
         modelo.addColumn("ID");
         modelo.addColumn("Origen");
@@ -153,7 +147,6 @@ public class JPanelReservas extends javax.swing.JPanel {
         modelo.addColumn("Cupos");
 
         for (Vuelo v : lista) {
-
             modelo.addRow(new Object[]{
                 v.getIdVuelo(),
                 v.getOrigen(),
@@ -163,14 +156,12 @@ public class JPanelReservas extends javax.swing.JPanel {
                 v.getCupos()
             });
         }
-
         tableVuelos.setModel(modelo);
     }
 
     private void eventosRadioButtons() {
 
         rbtnAñadir.addActionListener(e -> {
-
             txtNombresApellidos.setEnabled(true);
             txtCedula.setEnabled(true);
             txtFechaNacimiento.setEnabled(true);
@@ -183,7 +174,6 @@ public class JPanelReservas extends javax.swing.JPanel {
         });
 
         rbtnNoAñadir.addActionListener(e -> {
-
             txtNombresApellidos.setEnabled(false);
             txtCedula.setEnabled(false);
             txtFechaNacimiento.setEnabled(false);
@@ -195,28 +185,15 @@ public class JPanelReservas extends javax.swing.JPanel {
     }
 
     private void eventosTabla() {
-
         tableVuelos.getSelectionModel().addListSelectionListener(e -> {
-
             if (!e.getValueIsAdjusting() && tableVuelos.getSelectedRow() != -1) {
-
                 int fila = tableVuelos.getSelectedRow();
-
                 vueloSeleccionado = new Vuelo();
+                vueloSeleccionado.setIdVuelo(Integer.parseInt(tableVuelos.getValueAt(fila, 0).toString()));
 
-                vueloSeleccionado.setIdVuelo(
-                        Integer.parseInt(
-                                tableVuelos.getValueAt(fila, 0).toString()
-                        )
-                );
+                txtPrecioBase.setText(tableVuelos.getValueAt(fila, 4).toString());
 
-                txtPrecioBase.setText(
-                        tableVuelos.getValueAt(fila, 4).toString()
-                );
-
-                txtCupos.setText(
-                        tableVuelos.getValueAt(fila, 5).toString()
-                );
+                txtCupos.setText(tableVuelos.getValueAt(fila, 5).toString());
 
                 calcularTotal();
             }
@@ -598,26 +575,29 @@ public class JPanelReservas extends javax.swing.JPanel {
     private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
         try {
             if (vueloSeleccionado == null) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Seleccione un vuelo"
-                );
+                JOptionPane.showMessageDialog(this, "Seleccione un vuelo");
                 return;
             }
 
             List<String> asientos = panelAsientos.getAsientosSeleccionados();
             if (asientos.size() != cantidadPasajeros) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Debe seleccionar exactamente "
-                        + cantidadPasajeros
-                        + " asientos"
-                );
+                JOptionPane.showMessageDialog(this, "Debe seleccionar exactamente " + cantidadPasajeros + " asientos");
                 return;
             }
 
+            Set<String> verificar = new HashSet<>(asientos);
+
+            if (verificar.size() != asientos.size()) {
+                JOptionPane.showMessageDialog(this, "No puede seleccionar el mismo asiento más de una vez.");
+                return;
+            }
+
+            for (String asiento : asientos) {
+                if (!reservaController.asientoDisponible(vueloSeleccionado.getIdVuelo(), asiento)) {
+                    JOptionPane.showMessageDialog(this, "El asiento " + asiento + " ya se encuentra ocupado en este vuelo.");
+                    return;
+                }
+            }
             List<String> personas = new ArrayList<>();
 
             personas.add(cliente.getNombres() + " " + cliente.getApellidos());
@@ -632,19 +612,15 @@ public class JPanelReservas extends javax.swing.JPanel {
             detalle.append("ASIENTOS ASIGNADOS\n\n");
 
             for (int i = 0; i < personas.size(); i++) {
-
                 String persona = personas.get(i);
                 String asiento = asientos.get(i);
-
                 detalle.append(persona)
                         .append(" -> Asiento ")
                         .append(asiento)
                         .append("\n");
             }
 
-            double precio = Double.parseDouble(
-                    txtPrecioBase.getText()
-            );
+            double precio = Double.parseDouble(txtPrecioBase.getText());
 
             double total = precio * cantidadPasajeros;
 
@@ -652,9 +628,7 @@ public class JPanelReservas extends javax.swing.JPanel {
 
             r.setIdCliente(cliente.getId());
 
-            r.setIdVuelo(
-                    vueloSeleccionado.getIdVuelo()
-            );
+            r.setIdVuelo(vueloSeleccionado.getIdVuelo());
 
             r.setCantidadPasajeros(cantidadPasajeros);
 
@@ -663,29 +637,20 @@ public class JPanelReservas extends javax.swing.JPanel {
             int idReserva = reservaController.crearReserva(r);
 
             if (idReserva == -2) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Asiento no disponible"
-                );
-
+                JOptionPane.showMessageDialog(this, "Asiento no disponible");
                 return;
             }
             if (idReserva > 0) {
-
                 String asientoTitular = asientos.get(0);
+                boolean ok = reservaController.actualizarAsientoTitular(idReserva, asientoTitular);
 
-                reservaController.actualizarAsientoTitular(
-                        idReserva,
-                        asientoTitular
-                );
-
+                if (!ok) {
+                    JOptionPane.showMessageDialog(this, "El asiento " + asientoTitular + " ya fue ocupado por otra reserva.");
+                    return;
+                }
                 for (int i = 0; i < pasajeros.size(); i++) {
-
                     PasajeroExtra p = pasajeros.get(i);
-
                     String asiento = asientos.get(i + 1);
-
                     boolean registrado = reservaController.guardarPasajero(
                             p,
                             cliente.getId(),
@@ -695,48 +660,25 @@ public class JPanelReservas extends javax.swing.JPanel {
                     );
 
                     if (!registrado) {
-
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "Error guardando pasajero: "
-                                + p.getNombre()
-                        );
-
+                        JOptionPane.showMessageDialog(this, "El asiento " + asiento + " ya fue ocupado.");
                         return;
                     }
-
                 }
 
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Reserva creada correctamente\n"
-                        + "Total pagado: $" + total
-                        + "\n\n"
-                        + detalle.toString()
-                );
+                JOptionPane.showMessageDialog(this, "Reserva creada correctamente\n" + "Total pagado: $" + total + "\n\n" + detalle.toString());
             } else {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "No se pudo crear la reserva"
+                JOptionPane.showMessageDialog(this, "No se pudo crear la reserva"
                 );
             }
         } catch (Exception e) {
-
             e.printStackTrace();
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error al generar reserva"
-            );
+            JOptionPane.showMessageDialog(this,"Error al generar reserva");
         }
     }//GEN-LAST:event_btnComprarActionPerformed
 
     private void btnAniadirPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAniadirPasajeroActionPerformed
         if (vueloSeleccionado == null) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un vuelo"
-            );
+            JOptionPane.showMessageDialog(this, "Seleccione un vuelo");
             return;
         }
 
@@ -744,21 +686,12 @@ public class JPanelReservas extends javax.swing.JPanel {
         String cedula = txtCedula.getText().trim();
         String fechaNacimiento = txtFechaNacimiento.getText().trim();
 
-        if (nombres.isEmpty()
-                || cedula.isEmpty()
-                || fechaNacimiento.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Complete todos los campos"
-            );
+        if (nombres.isEmpty() || cedula.isEmpty() || fechaNacimiento.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Complete todos los campos");
             return;
         }
         if (!cedula.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "La cédula debe contener exactamente 10 números"
-            );
+            JOptionPane.showMessageDialog(this, "La cédula debe contener exactamente 10 números");
             return;
         }
 
@@ -767,26 +700,13 @@ public class JPanelReservas extends javax.swing.JPanel {
         String fecha = fechaNacimiento;
 
         if (!fecha.matches("\\d{4}-\\d{2}-\\d{2}")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Fecha incorrecta. Use formato YYYY-MM-DD"
-            );
-
+            JOptionPane.showMessageDialog(this, "Fecha incorrecta. Use formato YYYY-MM-DD");
             return;
         }
-
         try {
-
             java.sql.Date.valueOf(fecha);
-
         } catch (IllegalArgumentException e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "La fecha ingresada no es válida"
-            );
-
+            JOptionPane.showMessageDialog(this, "La fecha ingresada no es válida");
             return;
         }
 
@@ -796,16 +716,11 @@ public class JPanelReservas extends javax.swing.JPanel {
 
         pasajeros.add(p);
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Pasajero añadido correctamente"
-        );
+        JOptionPane.showMessageDialog(this, "Pasajero añadido correctamente");
 
         cantidadPasajeros = pasajeros.size() + 1;
 
-        txtNumeroPasajeros.setText(
-                String.valueOf(cantidadPasajeros)
-        );
+        txtNumeroPasajeros.setText(String.valueOf(cantidadPasajeros));
 
         calcularTotal();
 
@@ -820,21 +735,15 @@ public class JPanelReservas extends javax.swing.JPanel {
     }
 
     private void calcularTotal() {
-
         try {
-
             double precio = Double.parseDouble(
                     txtPrecioBase.getText()
             );
-
             double total = precio * cantidadPasajeros;
-
             txtTotalPagar.setText(
                     String.format("%.2f", total)
             );
-
         } catch (Exception e) {
-
             txtTotalPagar.setText("0.00");
         }
     }
